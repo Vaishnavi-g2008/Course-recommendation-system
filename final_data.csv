@@ -1,0 +1,99 @@
+Course_ID,Course_Name,Category,Skill_Level,Skills,Interest,Education,Career_Goal,Duration_Months,Rating,Difficulty,Job_Role,Salary_Range
+C0001,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,Data Scientist,6,4.1,Hard,AI Engineer,8-12 LPA
+C0018,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BE/BTech,Cloud Engineer,4,4.8,Hard,DevOps Engineer,4-7 LPA
+C0029,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,12th Pass,Cyber Security Engineer,5,4.1,Hard,Ethical Hacker,5-8 LPA
+C0038,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,12th Pass,Security Analyst,5,4.6,Hard,Ethical Hacker,3-5 LPA
+C0044,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BCA,Cloud Engineer,6,3.9,Hard,DevOps Engineer,3-5 LPA
+C0049,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Security Analyst,5,4.3,Hard,Ethical Hacker,3-5 LPA
+C0060,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,Diploma,Data Scientist,6,4.9,Hard,Deep Learning Engineer,5-8 LPA
+C0075,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BCA,AI Developer,6,4.6,Hard,Deep Learning Engineer,8-12 LPA
+C0078,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BE/BTech,Cyber Security Engineer,6,4.4,Hard,Ethical Hacker,3-5 LPA
+C0086,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BCA,Cyber Security Engineer,6,4.1,Hard,Ethical Hacker,5-8 LPA
+C0095,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,AI Engineer,6,4.5,Hard,Deep Learning Engineer,3-5 LPA
+C0122,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BSc IT,AI Engineer,5,4.5,Hard,Deep Learning Engineer,6-10 LPA
+C0133,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Security Analyst,6,4.7,Hard,Ethical Hacker,6-10 LPA
+C0134,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,12th Pass,ML Engineer,6,4.9,Hard,AI Engineer,3-5 LPA
+C0148,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,ML Engineer,6,4.2,Hard,AI Engineer,8-12 LPA
+C0169,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Security Analyst,6,4.9,Hard,Ethical Hacker,3-5 LPA
+C0189,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BSc IT,Data Scientist,5,4.3,Hard,AI Engineer,3-5 LPA
+C0190,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Security Analyst,7,5.0,Hard,Ethical Hacker,5-8 LPA
+C0200,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Security Analyst,6,4.5,Hard,Ethical Hacker,4-7 LPA
+C0203,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,ML Engineer,6,4.3,Hard,AI Engineer,6-10 LPA
+C0211,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BSc IT,ML Engineer,6,4.8,Hard,AI Engineer,8-12 LPA
+C0229,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,Diploma,DevOps Engineer,5,4.7,Hard,DevOps Engineer,5-8 LPA
+C0236,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,Diploma,DevOps Engineer,5,4.3,Hard,DevOps Engineer,5-8 LPA
+C0240,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Cyber Security Engineer,5,4.4,Hard,Ethical Hacker,3-5 LPA
+C0247,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,AI Engineer,6,4.4,Hard,Deep Learning Engineer,5-8 LPA
+C0250,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,12th Pass,Cloud Engineer,5,4.9,Hard,DevOps Engineer,8-12 LPA
+C0253,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,12th Pass,Cyber Security Engineer,6,4.1,Hard,Ethical Hacker,5-8 LPA
+C0263,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BE/BTech,AI Developer,7,3.8,Hard,Deep Learning Engineer,3-5 LPA
+C0265,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BE/BTech,Cloud Engineer,5,4.1,Hard,DevOps Engineer,3-5 LPA
+C0270,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,12th Pass,Cloud Engineer,5,4.8,Hard,DevOps Engineer,6-10 LPA
+C0273,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,Diploma,Data Scientist,7,4.2,Hard,Deep Learning Engineer,6-10 LPA
+C0280,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BSc IT,Cloud Engineer,5,3.9,Hard,DevOps Engineer,8-12 LPA
+C0298,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BE/BTech,Cyber Security Engineer,6,4.9,Hard,Ethical Hacker,4-7 LPA
+C0342,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,12th Pass,ML Engineer,6,3.9,Hard,AI Engineer,4-7 LPA
+C0355,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Cyber Security Engineer,6,4.5,Hard,Ethical Hacker,5-8 LPA
+C0361,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BE/BTech,DevOps Engineer,4,4.9,Hard,DevOps Engineer,3-5 LPA
+C0374,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,AI Developer,7,4.7,Hard,AI Engineer,4-7 LPA
+C0384,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Cyber Security Engineer,6,4.5,Hard,Ethical Hacker,6-10 LPA
+C0414,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BE/BTech,AI Engineer,6,4.0,Hard,Deep Learning Engineer,8-12 LPA
+C0432,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BSc IT,Data Scientist,7,4.9,Hard,Deep Learning Engineer,6-10 LPA
+C0437,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Security Analyst,6,4.6,Hard,Ethical Hacker,5-8 LPA
+C0441,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BCA,Data Scientist,6,4.6,Hard,AI Engineer,8-12 LPA
+C0445,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BSc IT,AI Developer,5,3.9,Hard,AI Engineer,5-8 LPA
+C0474,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BCA,AI Developer,5,5.0,Hard,AI Engineer,4-7 LPA
+C0483,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BE/BTech,Security Analyst,6,4.0,Hard,Ethical Hacker,5-8 LPA
+C0487,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,ML Engineer,7,4.6,Hard,Deep Learning Engineer,3-5 LPA
+C0490,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BE/BTech,ML Engineer,6,3.9,Hard,Deep Learning Engineer,8-12 LPA
+C0510,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,Data Scientist,6,4.1,Hard,AI Engineer,5-8 LPA
+C0517,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,Diploma,Cloud Engineer,5,4.8,Hard,DevOps Engineer,6-10 LPA
+C0532,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Cyber Security Engineer,6,4.8,Hard,Ethical Hacker,4-7 LPA
+C0534,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,Diploma,ML Engineer,6,4.3,Hard,Deep Learning Engineer,5-8 LPA
+C0545,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BE/BTech,ML Engineer,7,4.1,Hard,Deep Learning Engineer,6-10 LPA
+C0549,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BSc IT,Cloud Engineer,5,3.9,Hard,DevOps Engineer,5-8 LPA
+C0558,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BSc IT,Data Scientist,6,4.0,Hard,AI Engineer,6-10 LPA
+C0623,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Cyber Security Engineer,5,4.8,Hard,Ethical Hacker,6-10 LPA
+C0644,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,12th Pass,Cloud Engineer,5,3.9,Hard,DevOps Engineer,6-10 LPA
+C0648,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,12th Pass,AI Developer,6,4.9,Hard,AI Engineer,3-5 LPA
+C0651,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,AI Engineer,5,4.8,Hard,AI Engineer,5-8 LPA
+C0656,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BCA,Cyber Security Engineer,6,4.5,Hard,Ethical Hacker,6-10 LPA
+C0666,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BE/BTech,AI Developer,5,4.5,Hard,AI Engineer,3-5 LPA
+C0669,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Cyber Security Engineer,6,4.7,Hard,Ethical Hacker,3-5 LPA
+C0675,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BE/BTech,AI Developer,7,4.9,Hard,AI Engineer,6-10 LPA
+C0685,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,AI Developer,6,3.9,Hard,AI Engineer,4-7 LPA
+C0697,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BCA,Cloud Engineer,6,3.9,Hard,DevOps Engineer,6-10 LPA
+C0705,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BCA,AI Engineer,5,4.1,Hard,AI Engineer,6-10 LPA
+C0706,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BCA,AI Developer,5,4.7,Hard,AI Engineer,3-5 LPA
+C0707,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Security Analyst,5,3.9,Hard,Ethical Hacker,5-8 LPA
+C0719,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BCA,AI Engineer,7,4.4,Hard,AI Engineer,5-8 LPA
+C0728,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,ML Engineer,6,4.7,Hard,Deep Learning Engineer,3-5 LPA
+C0737,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BSc IT,DevOps Engineer,5,4.9,Hard,DevOps Engineer,3-5 LPA
+C0744,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BCA,ML Engineer,6,4.5,Hard,Deep Learning Engineer,4-7 LPA
+C0747,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,ML Engineer,6,4.6,Hard,Deep Learning Engineer,8-12 LPA
+C0780,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,12th Pass,AI Engineer,7,4.2,Hard,AI Engineer,8-12 LPA
+C0783,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,12th Pass,Security Analyst,6,3.9,Hard,Ethical Hacker,6-10 LPA
+C0790,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,AI Developer,7,3.8,Hard,AI Engineer,6-10 LPA
+C0795,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Cyber Security Engineer,6,4.6,Hard,Ethical Hacker,4-7 LPA
+C0800,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,ML Engineer,5,4.7,Hard,Deep Learning Engineer,8-12 LPA
+C0809,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Cyber Security Engineer,7,4.1,Hard,Ethical Hacker,4-7 LPA
+C0820,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,12th Pass,Cyber Security Engineer,7,4.3,Hard,Ethical Hacker,8-12 LPA
+C0845,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BSc IT,AI Engineer,6,4.0,Hard,Deep Learning Engineer,8-12 LPA
+C0852,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BSc IT,Cyber Security Engineer,7,4.2,Hard,Ethical Hacker,8-12 LPA
+C0856,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,AI Engineer,5,4.8,Hard,AI Engineer,4-7 LPA
+C0875,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,Diploma,AI Engineer,6,4.2,Hard,Deep Learning Engineer,5-8 LPA
+C0885,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BCA,Data Scientist,5,4.4,Hard,Deep Learning Engineer,8-12 LPA
+C0887,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BE/BTech,ML Engineer,6,4.3,Hard,Deep Learning Engineer,8-12 LPA
+C0910,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,ML Engineer,6,4.2,Hard,Deep Learning Engineer,6-10 LPA
+C0911,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,12th Pass,ML Engineer,6,3.9,Hard,Deep Learning Engineer,4-7 LPA
+C0927,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,BCA,DevOps Engineer,5,3.9,Hard,DevOps Engineer,4-7 LPA
+C0930,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,Diploma,Cyber Security Engineer,6,4.6,Hard,Ethical Hacker,3-5 LPA
+C0932,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,12th Pass,Cloud Engineer,5,4.5,Hard,DevOps Engineer,4-7 LPA
+C0938,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BE/BTech,Cyber Security Engineer,5,4.5,Hard,Ethical Hacker,4-7 LPA
+C0952,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,Diploma,AI Developer,5,4.7,Hard,AI Engineer,8-12 LPA
+C0956,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BSc IT,Data Scientist,6,4.7,Hard,AI Engineer,4-7 LPA
+C0969,DevOps,Cloud,Advanced,"Linux, Git, Docker, CI/CD",DevOps,Diploma,Cloud Engineer,5,4.9,Hard,DevOps Engineer,5-8 LPA
+C0973,Deep Learning,AI & ML,Advanced,"Python, TensorFlow, Neural Networks",Artificial Intelligence,BCA,Data Scientist,5,3.8,Hard,Deep Learning Engineer,4-7 LPA
+C0977,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BE/BTech,AI Engineer,5,4.3,Hard,AI Engineer,8-12 LPA
+C0980,Artificial Intelligence,AI & ML,Advanced,"Python, Machine Learning, Algorithms",Artificial Intelligence,BE/BTech,Data Scientist,6,4.4,Hard,AI Engineer,4-7 LPA
+C0986,Ethical Hacking,Cyber Security,Advanced,"Linux, Networking, Security Tools",Cyber Security,BE/BTech,Cyber Security Engineer,6,4.5,Hard,Ethical Hacker,6-10 LPA
