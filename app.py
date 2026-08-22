@@ -7,7 +7,7 @@ import os
 # ============================================================
 
 st.set_page_config(
-    page_title="Smart Course Finder",
+    page_title="Course Recommendation System",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="collapsed"
