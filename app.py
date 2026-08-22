@@ -2,121 +2,94 @@ import os
 import pandas as pd
 import streamlit as st
 
-
 # =========================================================
 # PAGE CONFIG
 # =========================================================
-
 st.set_page_config(
     page_title="Smart Course Recommendation System",
     page_icon="🎓",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
-
 
 # =========================================================
 # CUSTOM CSS
 # =========================================================
-
 st.markdown("""
 <style>
 
-.stApp {
-    background: linear-gradient(135deg, #f5f7ff, #ffffff, #eef2ff);
+.main {
+    background-color: #f7f9fc;
 }
 
-.block-container {
-    padding-top: 2rem;
-}
-
-
-/* Header */
-
-.hero {
+.header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
     padding: 35px;
     border-radius: 25px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
     text-align: center;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(80,80,150,0.25);
+    color: white;
+    margin-bottom: 25px;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.15);
 }
 
-.hero h1 {
-    font-size: 40px;
-    font-weight: 800;
+.header h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
 }
 
-.hero p {
+.header p {
     font-size: 18px;
 }
 
-
-/* Course Card */
+.pref-card {
+    background: #eef4ff;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
 
 .course-card {
     background: white;
     padding: 25px;
     border-radius: 20px;
-    margin-top: 18px;
-    margin-bottom: 18px;
-    border: 1px solid #e4e7ef;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    margin: 20px 0;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
+    border-left: 6px solid #667eea;
 }
-
-.best-card {
-    border: 3px solid #667eea;
-    box-shadow: 0 10px 35px rgba(102,126,234,0.25);
-}
-
-
-/* Badge */
-
-.badge {
-    display: inline-block;
-    padding: 7px 15px;
-    border-radius: 20px;
-    background: #667eea;
-    color: white;
-    font-weight: 700;
-    font-size: 13px;
-}
-
-
-/* Course title */
 
 .course-title {
     font-size: 28px;
-    font-weight: 800;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    font-weight: bold;
+    color: #222;
 }
 
-
-/* Info */
-
-.info-box {
-    background: #f7f8fc;
-    padding: 15px;
-    border-radius: 14px;
-    margin-top: 10px;
+.badge {
+    background: #667eea;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
 }
 
-
-/* Sidebar */
-
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #f5f7ff, #ffffff);
+.match {
+    font-size: 30px;
+    font-weight: bold;
+    color: #667eea;
 }
 
+.info {
+    font-size: 16px;
+    margin: 8px 0;
+}
 
-/* Footer */
-
-.footer {
-    text-align: center;
-    padding: 30px;
-    color: #777;
+.stButton > button {
+    width: 100%;
+    border-radius: 12px;
+    height: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
 }
 
 </style>
@@ -124,72 +97,70 @@ section[data-testid="stSidebar"] {
 
 
 # =========================================================
-# BASE DIRECTORY
+# FIND CSV FILE
 # =========================================================
 
-BASE_DIR = os.path.dirname(
-    os.path.abspath(__file__)
-)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+possible_files = [
+    "course_recommendation_dataset_1000.csv",
+    "final_data.csv",
+    "cleaned_data.csv",
+    "courses.csv"
+]
+
+csv_path = None
+
+for file_name in possible_files:
+    path = os.path.join(BASE_DIR, file_name)
+
+    if os.path.exists(path):
+        csv_path = path
+        break
 
 
 # =========================================================
-# CSV FILE PATH
+# CSV NOT FOUND
 # =========================================================
 
-csv_path = os.path.join(
-    BASE_DIR,
-    "course_recommendation_dataset_1000.csv"
-)
+if csv_path is None:
 
+    st.error("❌ Course dataset सापडला नाही!")
 
-# =========================================================
-# CHECK CSV
-# =========================================================
+    st.write("app.py आणि CSV file एकाच folder मध्ये ठेवा.")
 
-if not os.path.exists(csv_path):
+    st.write("Expected files:")
 
-    st.error(
-        "❌ course_recommendation_dataset_1000.csv file सापडली नाही!"
-    )
+    for file_name in possible_files:
+        st.write("•", file_name)
 
-    st.write(
-        "CSV file आणि app.py एकाच folder मध्ये ठेवा."
-    )
+    st.write("Current folder:")
 
-    st.code(csv_path)
+    st.code(BASE_DIR)
 
     st.stop()
 
 
 # =========================================================
-# LOAD CSV
+# LOAD DATA
 # =========================================================
 
 try:
-
     df = pd.read_csv(csv_path)
 
 except Exception as e:
 
-    st.error("❌ CSV file read करता आली नाही.")
-
-    st.write(e)
-
+    st.error("❌ CSV file read करताना error आला.")
+    st.code(str(e))
     st.stop()
 
 
-# =========================================================
-# CLEAN COLUMN NAMES
-# =========================================================
-
-df.columns = (
-    df.columns
-    .str.strip()
-)
+# Remove extra spaces from column names
+df.columns = df.columns.str.strip()
 
 
 # =========================================================
-# ACTUAL REQUIRED COLUMNS
+# REQUIRED COLUMNS
 # =========================================================
 
 required_columns = [
@@ -208,37 +179,24 @@ required_columns = [
     "Salary_Range"
 ]
 
-
-# =========================================================
-# CHECK COLUMNS
-# =========================================================
-
 missing_columns = [
-    col
-    for col in required_columns
+    col for col in required_columns
     if col not in df.columns
 ]
 
 
 if missing_columns:
 
-    st.error(
-        "❌ Dataset मध्ये काही columns missing आहेत."
-    )
+    st.error("❌ Dataset मध्ये काही required columns missing आहेत.")
 
-    st.write("Missing columns:")
+    st.write("### Missing Columns")
 
     for col in missing_columns:
-
         st.write("•", col)
 
-    st.write("")
+    st.write("### तुझ्या CSV मधील actual columns:")
 
-    st.write("तुझ्या CSV मधील actual columns:")
-
-    st.code(
-        ", ".join(df.columns.tolist())
-    )
+    st.code(", ".join(df.columns.tolist()))
 
     st.stop()
 
@@ -249,56 +207,16 @@ if missing_columns:
 
 for col in required_columns:
 
-    if col not in ["Rating", "Duration_Months"]:
+    df[col] = df[col].fillna("Unknown")
 
-        df[col] = (
-            df[col]
-            .fillna("")
-            .astype(str)
-            .str.strip()
-        )
+    df[col] = df[col].astype(str).str.strip()
 
 
+# Rating numeric
 df["Rating"] = pd.to_numeric(
     df["Rating"],
     errors="coerce"
-)
-
-df["Rating"] = df["Rating"].fillna(0)
-
-
-df["Duration_Months"] = pd.to_numeric(
-    df["Duration_Months"],
-    errors="coerce"
-)
-
-df["Duration_Months"] = (
-    df["Duration_Months"]
-    .fillna(0)
-)
-
-
-# =========================================================
-# REMOVE EMPTY COURSE
-# =========================================================
-
-df = df[
-    df["Course_Name"] != ""
-]
-
-
-# =========================================================
-# REMOVE DUPLICATE COURSES
-# =========================================================
-
-df = df.drop_duplicates(
-    subset=["Course_Name"]
-)
-
-
-df = df.reset_index(
-    drop=True
-)
+).fillna(0)
 
 
 # =========================================================
@@ -306,7 +224,7 @@ df = df.reset_index(
 # =========================================================
 
 st.markdown("""
-<div class="hero">
+<div class="header">
 
 <h1>🎓 Smart Course Recommendation System</h1>
 
@@ -323,662 +241,421 @@ interests and career goals 🚀
 # SIDEBAR
 # =========================================================
 
-st.sidebar.title(
-    "🎯 Your Preferences"
-)
+with st.sidebar:
 
-st.sidebar.write(
-    "Select your preferences below."
-)
+    st.markdown("## 🎯 Your Preferences")
+
+    st.write("Select your preferences below.")
 
 
-# =========================================================
-# CATEGORY
-# =========================================================
+    # Category
+    category_list = sorted(
+        df["Category"].dropna().unique().tolist()
+    )
 
-categories = sorted(
-    df["Category"]
-    .unique()
-    .tolist()
-)
-
-category = st.sidebar.selectbox(
-    "📚 Category",
-    categories
-)
+    category = st.selectbox(
+        "📚 Category",
+        category_list
+    )
 
 
-# =========================================================
-# SKILL LEVEL
-# =========================================================
+    # Skill Level
+    skill_level_list = sorted(
+        df["Skill_Level"].dropna().unique().tolist()
+    )
 
-skill_levels = sorted(
-    df["Skill_Level"]
-    .unique()
-    .tolist()
-)
-
-skill_level = st.sidebar.selectbox(
-    "📈 Skill Level",
-    skill_levels
-)
+    skill_level = st.selectbox(
+        "📈 Skill Level",
+        skill_level_list
+    )
 
 
-# =========================================================
-# SKILLS
-# =========================================================
+    # Skills
+    skills_list = sorted(
+        df["Skills"].dropna().unique().tolist()
+    )
 
-skills = sorted(
-    df["Skills"]
-    .unique()
-    .tolist()
-)
-
-skill = st.sidebar.selectbox(
-    "🛠️ Skills",
-    skills
-)
+    skills = st.selectbox(
+        "🛠️ Skills",
+        skills_list
+    )
 
 
-# =========================================================
-# INTEREST
-# =========================================================
+    # Interest
+    interest_list = sorted(
+        df["Interest"].dropna().unique().tolist()
+    )
 
-interests = sorted(
-    df["Interest"]
-    .unique()
-    .tolist()
-)
-
-interest = st.sidebar.selectbox(
-    "💡 Interest",
-    interests
-)
+    interest = st.selectbox(
+        "💡 Interest",
+        interest_list
+    )
 
 
-# =========================================================
-# EDUCATION
-# =========================================================
+    # Education
+    education_list = sorted(
+        df["Education"].dropna().unique().tolist()
+    )
 
-educations = sorted(
-    df["Education"]
-    .unique()
-    .tolist()
-)
-
-education = st.sidebar.selectbox(
-    "🎓 Education",
-    educations
-)
+    education = st.selectbox(
+        "🎓 Education",
+        education_list
+    )
 
 
-# =========================================================
-# CAREER GOAL
-# =========================================================
+    # Career Goal
+    career_list = sorted(
+        df["Career_Goal"].dropna().unique().tolist()
+    )
 
-career_goals = sorted(
-    df["Career_Goal"]
-    .unique()
-    .tolist()
-)
-
-career_goal = st.sidebar.selectbox(
-    "🎯 Career Goal",
-    career_goals
-)
+    career_goal = st.selectbox(
+        "🎯 Career Goal",
+        career_list
+    )
 
 
-# =========================================================
-# DIFFICULTY
-# =========================================================
+    st.write("")
 
-difficulties = sorted(
-    df["Difficulty"]
-    .unique()
-    .tolist()
-)
 
-difficulty = st.sidebar.selectbox(
-    "⚡ Difficulty",
-    difficulties
-)
+    # =====================================================
+    # RECOMMENDATION BUTTON
+    # =====================================================
+
+    recommend_button = st.button(
+        "🎯 Get Recommendations"
+    )
 
 
 # =========================================================
 # SELECTED PREFERENCES
 # =========================================================
 
-st.subheader(
-    "🔎 Your Selected Preferences"
-)
+st.markdown("## 🔍 Your Selected Preferences")
 
+col1, col2, col3, col4 = st.columns(4)
 
-p1, p2, p3, p4 = st.columns(4)
-
-
-with p1:
-
-    st.info(
-        f"📚 Category\n\n{category}"
-    )
-
-
-with p2:
-
-    st.info(
-        f"🛠️ Skill\n\n{skill}"
-    )
-
-
-with p3:
-
-    st.info(
-        f"💡 Interest\n\n{interest}"
-    )
-
-
-with p4:
-
-    st.info(
-        f"🎯 Career Goal\n\n{career_goal}"
-    )
-
-
-# =========================================================
-# RECOMMENDATION SCORE
-# =========================================================
-
-def calculate_score(row):
-
-    score = 0
-
-
-    # Category = 25
-    if str(row["Category"]).lower() == str(category).lower():
-
-        score += 25
-
-
-    # Skill Level = 10
-    if str(row["Skill_Level"]).lower() == str(skill_level).lower():
-
-        score += 10
-
-
-    # Skills = 15
-    if str(skill).lower() in str(row["Skills"]).lower():
-
-        score += 15
-
-
-    # Interest = 20
-    if str(interest).lower() in str(row["Interest"]).lower():
-
-        score += 20
-
-
-    # Education = 10
-    if str(row["Education"]).lower() == str(education).lower():
-
-        score += 10
-
-
-    # Career Goal = 15
-    if str(career_goal).lower() in str(row["Career_Goal"]).lower():
-
-        score += 15
-
-
-    # Difficulty = 5
-    if str(row["Difficulty"]).lower() == str(difficulty).lower():
-
-        score += 5
-
-
-    return score
-
-
-# =========================================================
-# CALCULATE SCORE
-# =========================================================
-
-df["Match_Score"] = df.apply(
-    calculate_score,
-    axis=1
-)
-
-
-# =========================================================
-# FINAL SCORE
-# =========================================================
-
-df["Final_Score"] = (
-    df["Match_Score"]
-    +
-    (df["Rating"] * 0.5)
-)
-
-
-# =========================================================
-# SORT
-# =========================================================
-
-df = df.sort_values(
-    by=["Final_Score", "Rating"],
-    ascending=[False, False]
-)
-
-
-# =========================================================
-# GET DIFFERENT TOP 5 COURSES
-# =========================================================
-
-recommendations = []
-
-used_courses = set()
-
-
-for _, row in df.iterrows():
-
-    course_name = (
-        str(row["Course_Name"])
-        .strip()
-        .lower()
-    )
-
-    if course_name in used_courses:
-
-        continue
-
-    used_courses.add(
-        course_name
-    )
-
-    recommendations.append(
-        row
-    )
-
-    if len(recommendations) == 5:
-
-        break
-
-
-recommendations = pd.DataFrame(
-    recommendations
-)
-
-
-# =========================================================
-# RECOMMENDATION SECTION
-# =========================================================
-
-st.divider()
-
-st.header(
-    "🏆 Your Personalized Recommendations"
-)
-
-st.write(
-    "Top 5 different courses selected according to your preferences."
-)
-
-
-# =========================================================
-# IF NO COURSE
-# =========================================================
-
-if recommendations.empty:
-
-    st.warning(
-        "⚠️ No recommendations found."
-    )
-
-    st.stop()
-
-
-# =========================================================
-# BEST COURSE
-# =========================================================
-
-best = recommendations.iloc[0]
-
-
-st.markdown(
-    f"""
-<div class="course-card best-card">
-
-<span class="badge">
-🥇 #1 BEST MATCH
-</span>
-
-<div class="course-title">
-🎓 {best["Course_Name"]}
-</div>
-
-</div>
-""",
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# BEST COURSE METRICS
-# =========================================================
-
-a, b, c, d = st.columns(4)
-
-
-with a:
-
-    st.metric(
-        "🎯 Match",
-        f"{int(best['Match_Score'])}%"
-    )
-
-
-with b:
-
-    st.metric(
-        "⭐ Rating",
-        f"{best['Rating']}/5"
-    )
-
-
-with c:
-
-    st.metric(
-        "⏱️ Duration",
-        f"{int(best['Duration_Months'])} Months"
-    )
-
-
-with d:
-
-    st.metric(
-        "💼 Job Role",
-        best["Job_Role"]
-    )
-
-
-# =========================================================
-# PROGRESS
-# =========================================================
-
-st.progress(
-    min(
-        int(best["Match_Score"]),
-        100
-    ) / 100
-)
-
-
-# =========================================================
-# BEST COURSE DETAILS
-# =========================================================
-
-x1, x2, x3 = st.columns(3)
-
-
-with x1:
-
+with col1:
     st.markdown(
         f"""
-        <div class="info-box">
+        <div class="pref-card">
+        📚 <b>Category</b><br><br>
+        {category}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-        📚 <b>Category</b><br>
-        {best["Category"]}
+with col2:
+    st.markdown(
+        f"""
+        <div class="pref-card">
+        🛠️ <b>Skill</b><br><br>
+        {skills}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
+with col3:
+    st.markdown(
+        f"""
+        <div class="pref-card">
+        💡 <b>Interest</b><br><br>
+        {interest}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col4:
+    st.markdown(
+        f"""
+        <div class="pref-card">
+        🎯 <b>Career Goal</b><br><br>
+        {career_goal}
         </div>
         """,
         unsafe_allow_html=True
     )
 
 
-with x2:
+# =========================================================
+# RECOMMENDATION FUNCTION
+# =========================================================
 
-    st.markdown(
-        f"""
-        <div class="info-box">
+def get_recommendations():
 
-        🛠️ <b>Skills</b><br>
-        {best["Skills"]}
+    data = df.copy()
 
-        </div>
-        """,
-        unsafe_allow_html=True
+    data["Score"] = 0
+
+    # -----------------------------------------------------
+    # CATEGORY MATCH
+    # -----------------------------------------------------
+
+    data.loc[
+        data["Category"].str.lower() == category.lower(),
+        "Score"
+    ] += 30
+
+
+    # -----------------------------------------------------
+    # SKILL LEVEL MATCH
+    # -----------------------------------------------------
+
+    data.loc[
+        data["Skill_Level"].str.lower() == skill_level.lower(),
+        "Score"
+    ] += 20
+
+
+    # -----------------------------------------------------
+    # SKILLS MATCH
+    # -----------------------------------------------------
+
+    data.loc[
+        data["Skills"].str.lower().str.contains(
+            skills.lower(),
+            na=False
+        ),
+        "Score"
+    ] += 15
+
+
+    # -----------------------------------------------------
+    # INTEREST MATCH
+    # -----------------------------------------------------
+
+    data.loc[
+        data["Interest"].str.lower() == interest.lower(),
+        "Score"
+    ] += 15
+
+
+    # -----------------------------------------------------
+    # EDUCATION MATCH
+    # -----------------------------------------------------
+
+    data.loc[
+        data["Education"].str.lower() == education.lower(),
+        "Score"
+    ] += 10
+
+
+    # -----------------------------------------------------
+    # CAREER GOAL MATCH
+    # -----------------------------------------------------
+
+    data.loc[
+        data["Career_Goal"].str.lower() == career_goal.lower(),
+        "Score"
+    ] += 10
+
+
+    # -----------------------------------------------------
+    # SORT
+    # -----------------------------------------------------
+
+    data = data.sort_values(
+        by=["Score", "Rating"],
+        ascending=False
     )
 
 
-with x3:
+    # -----------------------------------------------------
+    # REMOVE DUPLICATE COURSE NAMES
+    # -----------------------------------------------------
 
-    st.markdown(
-        f"""
-        <div class="info-box">
-
-        ⚡ <b>Difficulty</b><br>
-        {best["Difficulty"]}
-
-        </div>
-        """,
-        unsafe_allow_html=True
+    data = data.drop_duplicates(
+        subset=["Course_Name"]
     )
 
 
-st.write("")
+    # -----------------------------------------------------
+    # TOP 5 COURSES
+    # -----------------------------------------------------
 
-st.success(
-    f"💡 Interest: {best['Interest']}   |   "
-    f"🎯 Career Goal: {best['Career_Goal']}   |   "
-    f"🎓 Education: {best['Education']}"
-)
-
-
-st.info(
-    f"💰 Salary Range: {best['Salary_Range']}"
-)
+    return data.head(5)
 
 
 # =========================================================
-# OTHER COURSES
+# SHOW RECOMMENDATIONS ONLY AFTER BUTTON CLICK
 # =========================================================
 
-st.divider()
+if recommend_button:
 
-st.header(
-    "✨ More Recommended Courses"
-)
+    recommendations = get_recommendations()
 
 
-for i in range(
-    1,
-    len(recommendations)
-):
-
-    course = recommendations.iloc[i]
-
-
-    # Badge
-
-    if i == 1:
-
-        badge = "🥈 #2 RECOMMENDATION"
-
-    elif i == 2:
-
-        badge = "🥉 #3 RECOMMENDATION"
-
-    else:
-
-        badge = f"⭐ #{i + 1} RECOMMENDATION"
-
-
-    # Card
+    st.markdown("---")
 
     st.markdown(
-        f"""
-<div class="course-card">
-
-<span class="badge">
-{badge}
-</span>
-
-<div class="course-title">
-🎓 {course["Course_Name"]}
-</div>
-
-</div>
-""",
-        unsafe_allow_html=True
+        "## 🏆 Your Personalized Recommendations"
     )
-
-
-    # Metrics
-
-    a, b, c, d = st.columns(4)
-
-
-    with a:
-
-        st.metric(
-            "🎯 Match",
-            f"{int(course['Match_Score'])}%"
-        )
-
-
-    with b:
-
-        st.metric(
-            "⭐ Rating",
-            f"{course['Rating']}/5"
-        )
-
-
-    with c:
-
-        st.metric(
-            "⏱️ Duration",
-            f"{int(course['Duration_Months'])} Months"
-        )
-
-
-    with d:
-
-        st.metric(
-            "💼 Job Role",
-            course["Job_Role"]
-        )
-
-
-    # Progress
-
-    st.progress(
-        min(
-            int(course["Match_Score"]),
-            100
-        ) / 100
-    )
-
-
-    # Details
-
-    c1, c2 = st.columns(2)
-
-
-    with c1:
-
-        st.write(
-            f"📚 **Category:** {course['Category']}"
-        )
-
-        st.write(
-            f"🛠️ **Skills:** {course['Skills']}"
-        )
-
-        st.write(
-            f"💡 **Interest:** {course['Interest']}"
-        )
-
-
-    with c2:
-
-        st.write(
-            f"🎯 **Career Goal:** {course['Career_Goal']}"
-        )
-
-        st.write(
-            f"🎓 **Education:** {course['Education']}"
-        )
-
-        st.write(
-            f"⚡ **Difficulty:** {course['Difficulty']}"
-        )
-
 
     st.write(
-        f"💰 **Salary Range:** {course['Salary_Range']}"
+        f"Top {len(recommendations)} different courses "
+        "selected according to your preferences."
     )
 
 
-    st.divider()
+    # =====================================================
+    # COURSE CARDS
+    # =====================================================
+
+    for index, row in recommendations.reset_index(drop=True).iterrows():
+
+        rank = index + 1
+
+        match_score = int(row["Score"])
 
 
-# =========================================================
-# DATASET INFORMATION
-# =========================================================
+        # Make minimum visible score
+        if match_score < 5:
+            match_score = 5
 
-with st.expander("📊 Dataset Information"):
+
+        st.markdown(
+            f"""
+            <div class="course-card">
+
+            <span class="badge">
+            ⭐ #{rank} RECOMMENDATION
+            </span>
+
+            <br><br>
+
+            <div class="course-title">
+            🎓 {row["Course_Name"]}
+            </div>
+
+            <br>
+
+            <div class="match">
+            🎯 Match: {match_score}%
+            </div>
+
+            <hr>
+
+            <div class="info">
+            ⭐ <b>Rating:</b> {row["Rating"]}/5
+            </div>
+
+            <div class="info">
+            ⏱️ <b>Duration:</b> {row["Duration_Months"]} Months
+            </div>
+
+            <div class="info">
+            💼 <b>Job Role:</b> {row["Job_Role"]}
+            </div>
+
+            <div class="info">
+            📚 <b>Category:</b> {row["Category"]}
+            </div>
+
+            <div class="info">
+            🛠️ <b>Skills:</b> {row["Skills"]}
+            </div>
+
+            <div class="info">
+            💡 <b>Interest:</b> {row["Interest"]}
+            </div>
+
+            <div class="info">
+            🎯 <b>Career Goal:</b> {row["Career_Goal"]}
+            </div>
+
+            <div class="info">
+            🎓 <b>Education:</b> {row["Education"]}
+            </div>
+
+            <div class="info">
+            ⚡ <b>Difficulty:</b> {row["Difficulty"]}
+            </div>
+
+            <div class="info">
+            💰 <b>Salary Range:</b> {row["Salary_Range"]}
+            </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    # =====================================================
+    # DATASET INFORMATION
+    # =====================================================
+
+    st.markdown("---")
+
+    st.markdown("## 📊 Dataset Information")
 
     c1, c2, c3, c4 = st.columns(4)
 
-
     with c1:
-
         st.metric(
             "📚 Total Courses",
             len(df)
         )
 
-
     with c2:
-
         st.metric(
             "📂 Categories",
             df["Category"].nunique()
         )
 
-
     with c3:
-
         st.metric(
             "🎯 Career Goals",
             df["Career_Goal"].nunique()
         )
 
-
     with c4:
-
         st.metric(
             "💡 Interests",
             df["Interest"].nunique()
         )
 
 
+else:
+
+    # =====================================================
+    # BEFORE BUTTON CLICK
+    # =====================================================
+
+    st.markdown("---")
+
+    st.info(
+        "👈 तुमच्या preferences select करा आणि "
+        "🎯 Get Recommendations button वर click करा."
+    )
+
+    st.markdown("""
+    ### 🚀 How it works
+
+    1. 📚 Select Category  
+    2. 📈 Select Skill Level  
+    3. 🛠️ Select Skills  
+    4. 💡 Select Interest  
+    5. 🎓 Select Education  
+    6. 🎯 Select Career Goal  
+    7. 🏆 Click **Get Recommendations**
+    """)
+
+
 # =========================================================
 # FOOTER
 # =========================================================
 
-st.markdown("""
-<div class="footer">
+st.markdown("---")
 
-🎓 <b>Smart Course Recommendation System</b>
-
-<br><br>
-
-🤖 AI Based Recommendation
-&nbsp; | &nbsp;
-🎯 Career Guidance
-&nbsp; | &nbsp;
-🚀 Personalized Learning
-
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    """
+    <center>
+    <b>🎓 Smart Course Recommendation System</b><br>
+    Personalized Learning • Career Guidance • AI Based Recommendation
+    </center>
+    """,
+    unsafe_allow_html=True
+)
