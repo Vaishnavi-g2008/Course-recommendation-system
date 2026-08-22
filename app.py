@@ -14,233 +14,201 @@ st.set_page_config(
 )
 
 # ============================================================
-# CUSTOM CSS
+# PROFESSIONAL UI STYLE
 # ============================================================
 
 st.markdown("""
 <style>
 
-/* ==============================
-   MAIN BACKGROUND
-   ============================== */
+    /* ========================================================
+       MAIN APPLICATION
+       ======================================================== */
 
-.stApp {
-    background: linear-gradient(
-        135deg,
-        #f8fbff 0%,
-        #eef4ff 45%,
-        #f8f5ff 100%
-    );
-}
+    .stApp {
+        background: linear-gradient(
+            135deg,
+            #f8faff 0%,
+            #eef4ff 50%,
+            #f8fbff 100%
+        );
+    }
 
-/* ==============================
-   REMOVE TOP SPACE
-   ============================== */
+    .block-container {
+        max-width: 1400px;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
 
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-    max-width: 1400px;
-}
+    /* ========================================================
+       MAIN TITLE
+       ======================================================== */
 
-/* ==============================
-   MAIN TITLE
-   ============================== */
+    .main-title {
+        font-size: 46px;
+        font-weight: 800;
+        color: #172554;
+        letter-spacing: -1px;
+        margin-bottom: 5px;
+    }
 
-.main-title {
-    font-size: 48px;
-    font-weight: 800;
-    color: #172554;
-    margin-bottom: 5px;
-}
+    .main-subtitle {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2563eb;
+        margin-bottom: 8px;
+    }
 
-.main-subtitle {
-    font-size: 22px;
-    font-weight: 600;
-    color: #334155;
-    margin-bottom: 8px;
-}
+    .main-description {
+        font-size: 17px;
+        color: #64748b;
+        margin-bottom: 18px;
+    }
 
-.main-description {
-    font-size: 17px;
-    color: #64748b;
-}
+    /* ========================================================
+       SECTION HEADINGS
+       ======================================================== */
 
-/* ==============================
-   HERO CARD
-   ============================== */
+    h1, h2, h3 {
+        color: #172554 !important;
+    }
 
-.hero-card {
-    background: linear-gradient(
-        135deg,
-        #312e81,
-        #2563eb,
-        #0891b2
-    );
-    padding: 38px;
-    border-radius: 25px;
-    color: white;
-    margin-bottom: 30px;
-    box-shadow: 0 15px 35px rgba(37, 99, 235, 0.25);
-}
+    h2 {
+        font-weight: 750 !important;
+    }
 
-.hero-icon {
-    font-size: 55px;
-}
+    h3 {
+        font-weight: 700 !important;
+    }
 
-.hero-title {
-    font-size: 42px;
-    font-weight: 800;
-    margin-top: 5px;
-}
+    /* ========================================================
+       METRIC CARDS
+       ======================================================== */
 
-.hero-text {
-    font-size: 18px;
-    margin-top: 10px;
-    opacity: 0.92;
-}
+    div[data-testid="stMetric"] {
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #dbe4f0;
+        border-radius: 18px;
+        padding: 20px;
+        min-height: 120px;
+        box-shadow:
+            0 8px 25px rgba(15, 23, 42, 0.07);
+        transition: all 0.25s ease;
+    }
 
-/* ==============================
-   SECTION HEADINGS
-   ============================== */
+    div[data-testid="stMetric"]:hover {
+        transform: translateY(-4px);
+        box-shadow:
+            0 14px 30px rgba(37, 99, 235, 0.13);
+    }
 
-h1, h2, h3 {
-    color: #172554 !important;
-}
+    div[data-testid="stMetricLabel"] {
+        font-weight: 600;
+        color: #475569;
+    }
 
-.section-title {
-    font-size: 30px;
-    font-weight: 750;
-    color: #172554;
-}
+    div[data-testid="stMetricValue"] {
+        color: #172554;
+        font-weight: 800;
+    }
 
-.section-text {
-    color: #64748b;
-    font-size: 16px;
-}
+    /* ========================================================
+       SELECT BOX
+       ======================================================== */
 
-/* ==============================
-   METRIC CARDS
-   ============================== */
+    div[data-baseweb="select"] > div {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #dbe4f0;
+        min-height: 48px;
+    }
 
-[data-testid="stMetric"] {
-    background: rgba(255,255,255,0.88);
-    padding: 22px;
-    border-radius: 18px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 20px rgba(15,23,42,0.07);
-    min-height: 125px;
-}
+    div[data-baseweb="select"] > div:hover {
+        border-color: #2563eb;
+    }
 
-[data-testid="stMetricLabel"] {
-    color: #475569 !important;
-    font-weight: 600 !important;
-}
+    /* ========================================================
+       BUTTON
+       ======================================================== */
 
-[data-testid="stMetricValue"] {
-    color: #1d4ed8 !important;
-    font-weight: 800 !important;
-}
+    .stButton > button {
+        width: 100%;
+        height: 55px;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: 750;
+        border: none;
+        box-shadow:
+            0 8px 20px rgba(37, 99, 235, 0.20);
+        transition: all 0.25s ease;
+    }
 
-/* ==============================
-   SELECT BOX
-   ============================== */
+    .stButton > button:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            0 12px 28px rgba(37, 99, 235, 0.28);
+    }
 
-div[data-baseweb="select"] > div {
-    background-color: white;
-    border-radius: 12px;
-    border: 1px solid #dbeafe;
-}
+    /* ========================================================
+       CONTAINERS / CARDS
+       ======================================================== */
 
-div[data-baseweb="select"] > div:hover {
-    border-color: #2563eb;
-}
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        box-shadow:
+            0 8px 25px rgba(15, 23, 42, 0.06);
+        padding: 8px;
+        transition: all 0.25s ease;
+    }
 
-/* ==============================
-   BUTTON
-   ============================== */
+    div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+        box-shadow:
+            0 12px 30px rgba(37, 99, 235, 0.10);
+    }
 
-.stButton > button {
-    width: 100%;
-    border-radius: 14px;
-    min-height: 55px;
-    font-size: 17px;
-    font-weight: 750;
-    background: linear-gradient(
-        90deg,
-        #2563eb,
-        #7c3aed
-    );
-    color: white;
-    border: none;
-    box-shadow: 0 8px 18px rgba(37,99,235,0.25);
-    transition: 0.25s;
-}
+    /* ========================================================
+       ALERT BOXES
+       ======================================================== */
 
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(37,99,235,0.35);
-}
+    div[data-testid="stAlert"] {
+        border-radius: 14px;
+    }
 
-/* ==============================
-   INFO / SUCCESS / WARNING
-   ============================== */
+    /* ========================================================
+       TABS
+       ======================================================== */
 
-div[data-testid="stAlert"] {
-    border-radius: 14px;
-}
+    button[data-baseweb="tab"] {
+        font-weight: 650;
+        font-size: 15px;
+    }
 
-/* ==============================
-   COURSE CARD
-   ============================== */
+    /* ========================================================
+       PROGRESS BAR
+       ======================================================== */
 
-.course-card {
-    background: white;
-    padding: 28px;
-    border-radius: 22px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 28px rgba(15,23,42,0.08);
-    margin: 12px 0;
-}
+    div[data-testid="stProgress"] > div {
+        border-radius: 20px;
+    }
 
-/* ==============================
-   RECOMMENDATION HEADER
-   ============================== */
+    /* ========================================================
+       DIVIDER
+       ======================================================== */
 
-.recommend-title {
-    font-size: 34px;
-    font-weight: 800;
-    color: #172554;
-}
+    hr {
+        border-color: #dbe4f0;
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
 
-.recommend-name {
-    font-size: 28px;
-    font-weight: 750;
-    color: #1d4ed8;
-}
+    /* ========================================================
+       CAPTION
+       ======================================================== */
 
-/* ==============================
-   PROFILE AREA
-   ============================== */
-
-.profile-box {
-    background: rgba(255,255,255,0.75);
-    border-radius: 22px;
-    padding: 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 22px rgba(15,23,42,0.05);
-}
-
-/* ==============================
-   FOOTER
-   ============================== */
-
-.footer {
-    text-align: center;
-    padding: 25px;
-    color: #64748b;
-    font-size: 14px;
-}
+    .stCaption {
+        color: #64748b;
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -272,12 +240,20 @@ df = load_data()
 # ============================================================
 
 if df is None:
+
     st.error("❌ final_data.csv not found.")
-    st.info("Please keep final_data.csv in the same folder as app.py.")
+
+    st.info(
+        "Please keep final_data.csv in the same folder as app.py."
+    )
+
     st.stop()
 
+
 if df.empty:
+
     st.error("❌ final_data.csv is empty.")
+
     st.stop()
 
 
@@ -285,8 +261,16 @@ if df.empty:
 # CLEAN COLUMN NAMES
 # ============================================================
 
-df.columns = df.columns.astype(str).str.strip()
+df.columns = (
+    df.columns
+    .astype(str)
+    .str.strip()
+)
 
+
+# ============================================================
+# REQUIRED COLUMNS
+# ============================================================
 
 required_columns = [
     "Course_ID",
@@ -305,14 +289,23 @@ required_columns = [
 
 
 missing_columns = [
-    col for col in required_columns
+    col
+    for col in required_columns
     if col not in df.columns
 ]
 
 
 if missing_columns:
-    st.error("❌ Required columns are missing.")
-    st.write("Missing columns:", missing_columns)
+
+    st.error(
+        "❌ Required columns are missing."
+    )
+
+    st.write(
+        "Missing columns:",
+        missing_columns
+    )
+
     st.stop()
 
 
@@ -321,6 +314,7 @@ if missing_columns:
 # ============================================================
 
 df = df.copy()
+
 
 for col in required_columns:
 
@@ -350,73 +344,68 @@ df = df[
 
 
 if df.empty:
-    st.error("❌ No valid courses found.")
+
+    st.error(
+        "❌ No valid courses found."
+    )
+
     st.stop()
 
 
 # ============================================================
-# HERO SECTION
-# ============================================================
-
-st.markdown("""
-<div class="hero-card">
-
-    <div class="hero-icon">🎓</div>
-
-    <div class="hero-title">
-        Smart Course Finder
-    </div>
-
-    <div class="hero-text">
-        Discover the right course for your skills, interests,
-        education and future career goals.
-    </div>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-# ============================================================
-# INTRODUCTION
+# HEADER
 # ============================================================
 
 st.markdown(
-    '<div class="section-title">🚀 Find Your Perfect Learning Path</div>',
+    '<div class="main-title">🎓 Course Recommendation System</div>',
     unsafe_allow_html=True
 )
 
 st.markdown(
-    '<div class="section-text">'
-    'Choose your learning preferences and get personalized course recommendations.'
+    '<div class="main-subtitle">✨ Smart Course Finder</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="main-description">'
+    'Find the right course based on your skills, interests, '
+    'education and career goals.'
     '</div>',
     unsafe_allow_html=True
 )
 
-st.write("")
+st.divider()
+
+
+# ============================================================
+# FIND YOUR LEARNING PATH
+# ============================================================
+
+st.header("🚀 Find Your Perfect Learning Path")
+
+st.caption(
+    "Choose your learning preferences and get personalized "
+    "course recommendations."
+)
 
 
 # ============================================================
 # DASHBOARD
 # ============================================================
 
-st.markdown(
-    '<div class="section-title">📊 Learning Platform</div>',
-    unsafe_allow_html=True
-)
+st.header("📊 Learning Platform")
 
-st.markdown(
-    '<div class="section-text">'
-    'Explore our course database and available learning opportunities.'
-    '</div>',
-    unsafe_allow_html=True
+st.caption(
+    "Explore our course database and available learning opportunities."
 )
-
-st.write("")
 
 
 total_courses = df["Course_ID"].nunique()
+
 total_categories = df["Category"].nunique()
+
 total_roles = df["Job_Role"].nunique()
+
 average_rating = df["Rating"].mean()
 
 
@@ -424,6 +413,7 @@ col1, col2, col3, col4 = st.columns(4)
 
 
 with col1:
+
     st.metric(
         "🎓 Total Courses",
         f"{total_courses:,}"
@@ -431,6 +421,7 @@ with col1:
 
 
 with col2:
+
     st.metric(
         "📚 Categories",
         f"{total_categories:,}"
@@ -438,6 +429,7 @@ with col2:
 
 
 with col3:
+
     st.metric(
         "💼 Job Roles",
         f"{total_roles:,}"
@@ -445,6 +437,7 @@ with col3:
 
 
 with col4:
+
     st.metric(
         "⭐ Average Rating",
         f"{average_rating:.2f}/5"
@@ -455,20 +448,13 @@ with col4:
 # CATEGORY OVERVIEW
 # ============================================================
 
-st.write("")
-st.markdown(
-    '<div class="section-title">📚 Explore Course Categories</div>',
-    unsafe_allow_html=True
-)
+st.divider()
 
-st.markdown(
-    '<div class="section-text">'
-    'Browse the different learning domains available in the system.'
-    '</div>',
-    unsafe_allow_html=True
-)
+st.header("📚 Course Categories")
 
-st.write("")
+st.caption(
+    "Explore how courses are distributed across different categories."
+)
 
 
 category_count = (
@@ -483,66 +469,71 @@ category_count.columns = [
 ]
 
 
-cols = st.columns(len(category_count))
+category_columns = st.columns(
+    max(1, len(category_count))
+)
 
 
 for i, row in category_count.iterrows():
 
-    with cols[i]:
+    with category_columns[i]:
 
-        st.metric(
-            f"📘 {row['Category']}",
-            int(row["Courses"])
-        )
+        with st.container(border=True):
+
+            st.metric(
+                f"📘 {row['Category']}",
+                int(row["Courses"])
+            )
 
 
 # ============================================================
 # PROFILE SECTION
 # ============================================================
 
-st.write("")
 st.divider()
 
-st.markdown(
-    '<div class="section-title">👤 Build Your Learning Profile</div>',
-    unsafe_allow_html=True
-)
+st.header("👤 Build Your Learning Profile")
 
-st.markdown(
-    '<div class="section-text">'
-    'Tell us about yourself and we will find courses that match your profile.'
-    '</div>',
-    unsafe_allow_html=True
+st.caption(
+    "Tell us about yourself and select your learning preferences "
+    "to receive the most suitable course recommendations."
 )
-
-st.write("")
 
 
 # ============================================================
-# OPTIONS
+# OPTIONS FUNCTION
 # ============================================================
 
 def get_options(column):
 
     return sorted([
-        x for x in df[column].unique()
+        x
+        for x in df[column].unique()
         if str(x).strip()
     ])
 
 
 category_options = get_options("Category")
+
 skill_level_options = get_options("Skill_Level")
+
 interest_options = get_options("Interest")
+
 education_options = get_options("Education")
+
 career_goal_options = get_options("Career_Goal")
+
 skills_options = get_options("Skills")
+
 difficulty_options = get_options("Difficulty")
+
 job_role_options = get_options("Job_Role")
+
 salary_options = get_options("Salary_Range")
 
 
 # ============================================================
-# LEARNING PREFERENCES
+# PROFILE CARD 1
 # ============================================================
 
 st.subheader("📘 Learning Preferences")
@@ -575,10 +566,10 @@ with col3:
 
 
 # ============================================================
-# BACKGROUND & CAREER
+# PROFILE CARD 2
 # ============================================================
 
-st.subheader("🎓 Education & Career")
+st.subheader("🎓 Background & Career")
 
 col1, col2, col3 = st.columns(3)
 
@@ -608,7 +599,7 @@ with col3:
 
 
 # ============================================================
-# SKILLS & COURSE PREFERENCES
+# PROFILE CARD 3
 # ============================================================
 
 st.subheader("🛠️ Skills & Course Preferences")
@@ -645,11 +636,9 @@ with col3:
 # ============================================================
 
 st.write("")
-st.write("")
-
 
 find_course = st.button(
-    "🚀  FIND MY PERFECT COURSE  ",
+    "🚀 FIND MY PERFECT COURSE",
     type="primary",
     use_container_width=True
 )
@@ -666,86 +655,128 @@ if find_course:
     result["Match_Score"] = 0
 
 
-    # Category
+    # --------------------------------------------------------
+    # CATEGORY
+    # --------------------------------------------------------
+
     result.loc[
-        result["Category"].str.lower() ==
-        str(category).lower(),
+        result["Category"].str.lower()
+        == str(category).lower(),
         "Match_Score"
     ] += 15
 
 
-    # Skill Level
+    # --------------------------------------------------------
+    # SKILL LEVEL
+    # --------------------------------------------------------
+
     result.loc[
-        result["Skill_Level"].str.lower() ==
-        str(skill_level).lower(),
+        result["Skill_Level"].str.lower()
+        == str(skill_level).lower(),
         "Match_Score"
     ] += 10
 
 
-    # Interest
+    # --------------------------------------------------------
+    # INTEREST
+    # --------------------------------------------------------
+
     result.loc[
-        result["Interest"].str.lower() ==
-        str(interest).lower(),
+        result["Interest"].str.lower()
+        == str(interest).lower(),
         "Match_Score"
     ] += 15
 
 
-    # Education
+    # --------------------------------------------------------
+    # EDUCATION
+    # --------------------------------------------------------
+
     result.loc[
-        result["Education"].str.lower() ==
-        str(education).lower(),
+        result["Education"].str.lower()
+        == str(education).lower(),
         "Match_Score"
     ] += 10
 
 
-    # Career Goal
+    # --------------------------------------------------------
+    # CAREER GOAL
+    # --------------------------------------------------------
+
     result.loc[
-        result["Career_Goal"].str.lower() ==
-        str(career_goal).lower(),
+        result["Career_Goal"].str.lower()
+        == str(career_goal).lower(),
         "Match_Score"
     ] += 15
 
 
-    # Skills
+    # --------------------------------------------------------
+    # SKILLS
+    # --------------------------------------------------------
+
     result.loc[
-        result["Skills"].str.lower() ==
-        str(skills).lower(),
+        result["Skills"].str.lower()
+        == str(skills).lower(),
         "Match_Score"
     ] += 10
 
 
-    # Difficulty
+    # --------------------------------------------------------
+    # DIFFICULTY
+    # --------------------------------------------------------
+
     result.loc[
-        result["Difficulty"].str.lower() ==
-        str(difficulty).lower(),
+        result["Difficulty"].str.lower()
+        == str(difficulty).lower(),
         "Match_Score"
     ] += 5
 
 
-    # Job Role
+    # --------------------------------------------------------
+    # JOB ROLE
+    # --------------------------------------------------------
+
     result.loc[
-        result["Job_Role"].str.lower() ==
-        str(job_role).lower(),
+        result["Job_Role"].str.lower()
+        == str(job_role).lower(),
         "Match_Score"
     ] += 10
 
 
-    # Salary
+    # --------------------------------------------------------
+    # SALARY
+    # --------------------------------------------------------
+
     result.loc[
-        result["Salary_Range"].str.lower() ==
-        str(salary_range).lower(),
+        result["Salary_Range"].str.lower()
+        == str(salary_range).lower(),
         "Match_Score"
     ] += 10
 
 
     # ========================================================
-    # SORT
+    # SORT RESULTS
     # ========================================================
 
     result = result.sort_values(
-        by=["Match_Score", "Rating"],
-        ascending=[False, False]
+        by=[
+            "Match_Score",
+            "Rating"
+        ],
+        ascending=[
+            False,
+            False
+        ]
     ).reset_index(drop=True)
+
+
+    if result.empty:
+
+        st.error(
+            "❌ No recommendation found."
+        )
+
+        st.stop()
 
 
     course = result.iloc[0]
@@ -774,87 +805,93 @@ if find_course:
         )
 
 
-    score = int(course["Match_Score"])
+    # ========================================================
+    # MATCH SCORE
+    # ========================================================
 
-    percentage = min(score, 100)
+    score = int(
+        course["Match_Score"]
+    )
+
+    percentage = min(
+        score,
+        100
+    )
 
 
     # ========================================================
-    # RESULT
+    # RECOMMENDATION RESULT
     # ========================================================
 
-    st.write("")
     st.divider()
 
-    st.markdown(
-        '<div class="recommend-title">'
-        '🏆 Your Personalized Course Recommendation'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    st.header("🏆 Your Course Recommendation")
 
     st.success(
-        "🎉 Great! We found a course that matches your learning profile."
+        "🎉 We found a course that matches your learning profile!"
     )
 
 
     # ========================================================
-    # COURSE CARD
+    # BEST COURSE CARD
     # ========================================================
 
-    st.markdown(
-        f'<div class="recommend-name">🎓 {course_name}</div>',
-        unsafe_allow_html=True
-    )
+    with st.container(border=True):
 
-    st.write("")
-
-
-    col1, col2 = st.columns([2.2, 1])
-
-
-    with col1:
-
-        st.write(
-            f"**🆔 Course ID:** {course['Course_ID']}"
+        st.subheader(
+            f"🎓 {course_name}"
         )
 
-        st.write(
-            f"**📚 Category:** {course['Category']}"
-        )
+        st.write("")
 
-        st.write(
-            f"**📈 Skill Level:** {course['Skill_Level']}"
-        )
 
-        st.write(
-            f"**💡 Interest:** {course['Interest']}"
-        )
-
-        st.write(
-            f"**🎯 Career Goal:** {course['Career_Goal']}"
-        )
-
-        st.write(
-            f"**💼 Job Role:** {course['Job_Role']}"
+        col1, col2 = st.columns(
+            [2, 1]
         )
 
 
-    with col2:
+        with col1:
 
-        st.metric(
-            "🎯 Profile Match",
-            f"{percentage}%"
-        )
+            st.write(
+                f"**Course ID:** {course['Course_ID']}"
+            )
 
-        st.progress(
-            percentage / 100
-        )
+            st.write(
+                f"**📚 Category:** {course['Category']}"
+            )
 
-        st.metric(
-            "⭐ Course Rating",
-            f"{course['Rating']} / 5"
-        )
+            st.write(
+                f"**📈 Skill Level:** {course['Skill_Level']}"
+            )
+
+            st.write(
+                f"**💡 Interest:** {course['Interest']}"
+            )
+
+            st.write(
+                f"**🎯 Career Goal:** {course['Career_Goal']}"
+            )
+
+            st.write(
+                f"**💼 Job Role:** {course['Job_Role']}"
+            )
+
+
+        with col2:
+
+            st.metric(
+                "🎯 Profile Match",
+                f"{percentage}%"
+            )
+
+            st.progress(
+                percentage / 100
+            )
+
+            st.metric(
+                "⭐ Rating",
+                f"{course['Rating']} / 5"
+            )
 
 
     # ========================================================
@@ -876,7 +913,7 @@ if find_course:
     else:
 
         st.warning(
-            "💡 Moderate Match. Explore the Top 5 recommendations below."
+            "💡 Moderate Match. Check the Top 5 recommendations below."
         )
 
 
@@ -884,21 +921,25 @@ if find_course:
     # COURSE HIGHLIGHTS
     # ========================================================
 
-    st.write("")
     st.divider()
 
-    st.markdown(
-        '<div class="section-title">📌 Course Highlights</div>',
-        unsafe_allow_html=True
+    st.header("📌 Course Highlights")
+
+
+    duration = float(
+        course["Duration_Months"]
     )
 
-    duration = float(course["Duration_Months"])
 
-    duration_text = (
-        f"{duration:g} Months"
-        if duration > 0
-        else "N/A"
-    )
+    if duration > 0:
+
+        duration_text = (
+            f"{duration:g} Months"
+        )
+
+    else:
+
+        duration_text = "N/A"
 
 
     col1, col2, col3, col4 = st.columns(4)
@@ -937,15 +978,13 @@ if find_course:
 
 
     # ========================================================
-    # DETAILS
+    # COURSE DETAILS
     # ========================================================
 
     st.divider()
 
-    st.markdown(
-        '<div class="section-title">📋 Course Details</div>',
-        unsafe_allow_html=True
-    )
+    st.header("📋 Course Details")
+
 
     tab1, tab2, tab3 = st.tabs(
         [
@@ -958,13 +997,17 @@ if find_course:
 
     with tab1:
 
-        st.subheader("🛠️ Required Skills")
+        st.subheader(
+            "🛠️ Required Skills"
+        )
 
         st.info(
             course["Skills"]
         )
 
-        st.subheader("💡 Area of Interest")
+        st.subheader(
+            "💡 Area of Interest"
+        )
 
         st.info(
             course["Interest"]
@@ -973,19 +1016,25 @@ if find_course:
 
     with tab2:
 
-        st.subheader("🎯 Career Goal")
+        st.subheader(
+            "🎯 Career Goal"
+        )
 
         st.success(
             course["Career_Goal"]
         )
 
-        st.subheader("💼 Target Job Role")
+        st.subheader(
+            "💼 Target Job Role"
+        )
 
         st.info(
             course["Job_Role"]
         )
 
-        st.subheader("⚡ Difficulty Level")
+        st.subheader(
+            "⚡ Difficulty Level"
+        )
 
         st.warning(
             course["Difficulty"]
@@ -994,13 +1043,17 @@ if find_course:
 
     with tab3:
 
-        st.subheader("🎓 Required Education")
+        st.subheader(
+            "🎓 Required Education"
+        )
 
         st.info(
             course["Education"]
         )
 
-        st.subheader("📚 Course Category")
+        st.subheader(
+            "📚 Course Category"
+        )
 
         st.info(
             course["Category"]
@@ -1008,24 +1061,16 @@ if find_course:
 
 
     # ========================================================
-    # TOP 5
+    # TOP 5 RECOMMENDATIONS
     # ========================================================
 
     st.divider()
 
-    st.markdown(
-        '<div class="section-title">🥇 Top 5 Recommended Courses</div>',
-        unsafe_allow_html=True
-    )
+    st.header("🥇 Top 5 Recommended Courses")
 
-    st.markdown(
-        '<div class="section-text">'
-        'Alternative courses ranked according to your learning profile.'
-        '</div>',
-        unsafe_allow_html=True
+    st.caption(
+        "Alternative courses ranked according to your profile."
     )
-
-    st.write("")
 
 
     top5 = result.head(5)
@@ -1091,22 +1136,13 @@ if find_course:
 # HOW IT WORKS
 # ============================================================
 
-st.write("")
 st.divider()
 
-st.markdown(
-    '<div class="section-title">🧠 How Course Recommendation Works</div>',
-    unsafe_allow_html=True
-)
+st.header("🧠 How Course Recommendation Works")
 
-st.markdown(
-    '<div class="section-text">'
-    'Three simple steps help you discover the right learning path.'
-    '</div>',
-    unsafe_allow_html=True
+st.caption(
+    "Our recommendation process works in three simple steps."
 )
-
-st.write("")
 
 
 col1, col2, col3 = st.columns(3)
@@ -1116,9 +1152,13 @@ with col1:
 
     with st.container(border=True):
 
-        st.subheader("01 👤")
+        st.subheader(
+            "01 👤"
+        )
 
-        st.write("### Build Your Profile")
+        st.write(
+            "### Build Your Profile"
+        )
 
         st.write(
             "Choose your education, skills, interests "
@@ -1130,13 +1170,17 @@ with col2:
 
     with st.container(border=True):
 
-        st.subheader("02 🔎")
-
-        st.write("### Smart Matching")
+        st.subheader(
+            "02 🔎"
+        )
 
         st.write(
-            "Your profile is compared with course "
-            "attributes to calculate a compatibility score."
+            "### Smart Matching"
+        )
+
+        st.write(
+            "The system compares your preferences "
+            "with the available course information."
         )
 
 
@@ -1144,29 +1188,29 @@ with col3:
 
     with st.container(border=True):
 
-        st.subheader("03 🚀")
-
-        st.write("### Get Recommendations")
+        st.subheader(
+            "03 🚀"
+        )
 
         st.write(
-            "The highest-scoring courses are ranked "
-            "and displayed for you."
+            "### Get Recommendations"
+        )
+
+        st.write(
+            "Courses are ranked using a matching score "
+            "and the best options are displayed."
         )
 
 
 # ============================================================
-# WHY USE OUR SYSTEM
+# WHY USE THE SYSTEM
 # ============================================================
 
-st.write("")
 st.divider()
 
-st.markdown(
-    '<div class="section-title">✨ Why Use Course Recommendation System?</div>',
-    unsafe_allow_html=True
+st.header(
+    "✨ Why Use Course Recommendation System?"
 )
-
-st.write("")
 
 
 col1, col2, col3, col4 = st.columns(4)
@@ -1176,12 +1220,11 @@ with col1:
 
     with st.container(border=True):
 
-        st.subheader("🎯")
+        st.subheader("🎯 Personalized")
 
-        st.write("### Personalized")
-
-        st.caption(
-            "Recommendations based on your profile."
+        st.write(
+            "Recommendations are based on "
+            "your learning profile."
         )
 
 
@@ -1189,12 +1232,11 @@ with col2:
 
     with st.container(border=True):
 
-        st.subheader("⚡")
+        st.subheader("⚡ Fast")
 
-        st.write("### Fast")
-
-        st.caption(
-            "Find suitable courses quickly."
+        st.write(
+            "Find suitable courses quickly "
+            "without searching manually."
         )
 
 
@@ -1202,12 +1244,11 @@ with col3:
 
     with st.container(border=True):
 
-        st.subheader("📊")
+        st.subheader("📊 Data Driven")
 
-        st.write("### Data Driven")
-
-        st.caption(
-            "Courses ranked using profile matching."
+        st.write(
+            "Courses are ranked using "
+            "profile matching."
         )
 
 
@@ -1215,12 +1256,11 @@ with col4:
 
     with st.container(border=True):
 
-        st.subheader("🚀")
+        st.subheader("🚀 Career Focused")
 
-        st.write("### Career Focused")
-
-        st.caption(
-            "Designed around your career goals."
+        st.write(
+            "Recommendations are aligned "
+            "with your career goals."
         )
 
 
@@ -1228,13 +1268,20 @@ with col4:
 # FOOTER
 # ============================================================
 
-st.write("")
 st.divider()
 
 st.markdown(
-    '<div class="footer">'
-    '🎓 Course Recommendation System '
-    '| Built with Python, Pandas & Streamlit'
-    '</div>',
+    """
+    <div style="
+        text-align:center;
+        color:#64748b;
+        padding:20px;
+        font-size:14px;
+    ">
+        🎓 <b>Course Recommendation System</b>
+        <br>
+        Built with Python • Pandas • Streamlit
+    </div>
+    """,
     unsafe_allow_html=True
 )
