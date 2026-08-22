@@ -13,7 +13,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-
 # ============================================================
 # LOAD DATA
 # ============================================================
@@ -34,43 +33,24 @@ def load_data():
 
 df = load_data()
 
-
 # ============================================================
-# DATA ERROR CHECK
+# ERROR CHECK
 # ============================================================
 
 if df is None:
-
     st.error("❌ final_data.csv not found.")
-
-    st.info(
-        "Please keep final_data.csv in the same folder as app.py."
-    )
-
+    st.info("Please keep final_data.csv in the same folder as app.py.")
     st.stop()
-
 
 if df.empty:
-
     st.error("❌ final_data.csv is empty.")
-
     st.stop()
-
 
 # ============================================================
 # CLEAN COLUMN NAMES
 # ============================================================
 
-df.columns = (
-    df.columns
-    .astype(str)
-    .str.strip()
-)
-
-
-# ============================================================
-# REQUIRED COLUMNS
-# ============================================================
+df.columns = df.columns.astype(str).str.strip()
 
 required_columns = [
     "Course_ID",
@@ -87,25 +67,15 @@ required_columns = [
     "Salary_Range"
 ]
 
-
 missing_columns = [
-    column
-    for column in required_columns
-    if column not in df.columns
+    col for col in required_columns
+    if col not in df.columns
 ]
 
-
 if missing_columns:
-
     st.error("❌ Required columns are missing.")
-
-    st.write(
-        "Missing columns:",
-        missing_columns
-    )
-
+    st.write("Missing columns:", missing_columns)
     st.stop()
-
 
 # ============================================================
 # CLEAN DATA
@@ -113,210 +83,165 @@ if missing_columns:
 
 df = df.copy()
 
-
-for column in required_columns:
-
-    df[column] = (
-        df[column]
+for col in required_columns:
+    df[col] = (
+        df[col]
         .fillna("")
         .astype(str)
         .str.strip()
     )
-
 
 df["Rating"] = pd.to_numeric(
     df["Rating"],
     errors="coerce"
 ).fillna(0)
 
-
 df["Duration_Months"] = pd.to_numeric(
     df["Duration_Months"],
     errors="coerce"
 ).fillna(0)
 
-
 df = df[
     df["Course_ID"].str.strip() != ""
 ].copy()
 
-
 if df.empty:
-
     st.error("❌ No valid courses found.")
-
     st.stop()
 
-
 # ============================================================
-# TITLE
+# HEADER
 # ============================================================
 
-st.title("🎓 Smart Course Finder")
+st.title("🎓 Course Recommendation System")
 
 st.subheader(
-    "Find the right course for your skills, interests and career goals."
+    "✨ Smart Course Finder"
 )
 
 st.write(
-    "Select your learning preferences below and get personalized "
-    "course recommendations."
+    "Find the right learning path based on your "
+    "skills, interests, education and career goals."
 )
 
-st.divider()
-
+st.info(
+    "💡 Select your preferences below and let the system "
+    "find the most suitable courses for you."
+)
 
 # ============================================================
 # DASHBOARD
 # ============================================================
 
+st.divider()
+
 st.header("📊 Learning Platform")
 
 st.caption(
-    "Explore the learning opportunities available in the course database."
+    "Explore the course database and discover available learning opportunities."
 )
 
-
 total_courses = df["Course_ID"].nunique()
-
 total_categories = df["Category"].nunique()
-
 total_roles = df["Job_Role"].nunique()
-
 average_rating = df["Rating"].mean()
-
 
 col1, col2, col3, col4 = st.columns(4)
 
-
 with col1:
-
     st.metric(
-        label="🎓 Total Courses",
-        value=f"{total_courses:,}"
+        "🎓 Total Courses",
+        f"{total_courses:,}"
     )
-
 
 with col2:
-
     st.metric(
-        label="📚 Categories",
-        value=f"{total_categories:,}"
+        "📚 Categories",
+        f"{total_categories:,}"
     )
-
 
 with col3:
-
     st.metric(
-        label="💼 Job Roles",
-        value=f"{total_roles:,}"
+        "💼 Job Roles",
+        f"{total_roles:,}"
     )
-
 
 with col4:
-
     st.metric(
-        label="⭐ Average Rating",
-        value=f"{average_rating:.2f}/5"
+        "⭐ Average Rating",
+        f"{average_rating:.2f}/5"
     )
 
+# ============================================================
+# CATEGORY OVERVIEW
+# ============================================================
 
 st.divider()
 
+st.header("📚 Course Categories")
+
+category_count = (
+    df["Category"]
+    .value_counts()
+    .reset_index()
+)
+
+category_count.columns = [
+    "Category",
+    "Courses"
+]
+
+cols = st.columns(len(category_count))
+
+for i, row in category_count.iterrows():
+
+    with cols[i]:
+        st.metric(
+            f"📘 {row['Category']}",
+            int(row["Courses"])
+        )
 
 # ============================================================
-# PROFILE
+# PROFILE SECTION
 # ============================================================
+
+st.divider()
 
 st.header("👤 Build Your Learning Profile")
 
 st.caption(
-    "Choose your preferences to find the courses that best match your profile."
+    "Tell us about your learning preferences to get a personalized recommendation."
 )
-
 
 # ============================================================
-# CATEGORY OPTIONS
+# OPTIONS
 # ============================================================
 
-category_options = sorted(
-    [
-        x for x in df["Category"].unique()
+def get_options(column):
+
+    return sorted([
+        x for x in df[column].unique()
         if str(x).strip()
-    ]
-)
+    ])
 
 
-skill_level_options = sorted(
-    [
-        x for x in df["Skill_Level"].unique()
-        if str(x).strip()
-    ]
-)
-
-
-interest_options = sorted(
-    [
-        x for x in df["Interest"].unique()
-        if str(x).strip()
-    ]
-)
-
-
-education_options = sorted(
-    [
-        x for x in df["Education"].unique()
-        if str(x).strip()
-    ]
-)
-
-
-career_goal_options = sorted(
-    [
-        x for x in df["Career_Goal"].unique()
-        if str(x).strip()
-    ]
-)
-
-
-skills_options = sorted(
-    [
-        x for x in df["Skills"].unique()
-        if str(x).strip()
-    ]
-)
-
-
-difficulty_options = sorted(
-    [
-        x for x in df["Difficulty"].unique()
-        if str(x).strip()
-    ]
-)
-
-
-job_role_options = sorted(
-    [
-        x for x in df["Job_Role"].unique()
-        if str(x).strip()
-    ]
-)
-
-
-salary_options = sorted(
-    [
-        x for x in df["Salary_Range"].unique()
-        if str(x).strip()
-    ]
-)
-
+category_options = get_options("Category")
+skill_level_options = get_options("Skill_Level")
+interest_options = get_options("Interest")
+education_options = get_options("Education")
+career_goal_options = get_options("Career_Goal")
+skills_options = get_options("Skills")
+difficulty_options = get_options("Difficulty")
+job_role_options = get_options("Job_Role")
+salary_options = get_options("Salary_Range")
 
 # ============================================================
-# PROFILE ROW 1
+# PROFILE CARD 1
 # ============================================================
+
+st.subheader("📘 Learning Preferences")
 
 col1, col2, col3 = st.columns(3)
-
 
 with col1:
 
@@ -325,14 +250,12 @@ with col1:
         category_options
     )
 
-
 with col2:
 
     skill_level = st.selectbox(
         "📈 Skill Level",
         skill_level_options
     )
-
 
 with col3:
 
@@ -341,13 +264,13 @@ with col3:
         interest_options
     )
 
+# ============================================================
+# PROFILE CARD 2
+# ============================================================
 
-# ============================================================
-# PROFILE ROW 2
-# ============================================================
+st.subheader("🎓 Background & Career")
 
 col1, col2, col3 = st.columns(3)
-
 
 with col1:
 
@@ -356,7 +279,6 @@ with col1:
         education_options
     )
 
-
 with col2:
 
     career_goal = st.selectbox(
@@ -364,37 +286,34 @@ with col2:
         career_goal_options
     )
 
-
 with col3:
-
-    skills = st.selectbox(
-        "🛠️ Skills",
-        skills_options
-    )
-
-
-# ============================================================
-# PROFILE ROW 3
-# ============================================================
-
-col1, col2, col3 = st.columns(3)
-
-
-with col1:
-
-    difficulty = st.selectbox(
-        "⚡ Difficulty",
-        difficulty_options
-    )
-
-
-with col2:
 
     job_role = st.selectbox(
         "💼 Target Job Role",
         job_role_options
     )
 
+# ============================================================
+# PROFILE CARD 3
+# ============================================================
+
+st.subheader("🛠️ Skills & Course Preferences")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+
+    skills = st.selectbox(
+        "🛠️ Skills",
+        skills_options
+    )
+
+with col2:
+
+    difficulty = st.selectbox(
+        "⚡ Difficulty",
+        difficulty_options
+    )
 
 with col3:
 
@@ -403,133 +322,93 @@ with col3:
         salary_options
     )
 
+# ============================================================
+# FIND BUTTON
+# ============================================================
 
 st.write("")
 
-
-# ============================================================
-# RECOMMEND BUTTON
-# ============================================================
-
-recommend_button = st.button(
+find_course = st.button(
     "🚀 FIND MY PERFECT COURSE",
     type="primary",
     use_container_width=True
 )
 
-
 # ============================================================
 # RECOMMENDATION SYSTEM
 # ============================================================
 
-if recommend_button:
+if find_course:
 
     result = df.copy()
 
     result["Match_Score"] = 0
 
-
-    # --------------------------------------------------------
-    # CATEGORY
-    # --------------------------------------------------------
-
+    # Category
     result.loc[
-        result["Category"].str.lower()
-        == str(category).lower(),
+        result["Category"].str.lower() ==
+        str(category).lower(),
         "Match_Score"
     ] += 15
 
-
-    # --------------------------------------------------------
-    # SKILL LEVEL
-    # --------------------------------------------------------
-
+    # Skill Level
     result.loc[
-        result["Skill_Level"].str.lower()
-        == str(skill_level).lower(),
+        result["Skill_Level"].str.lower() ==
+        str(skill_level).lower(),
         "Match_Score"
     ] += 10
 
-
-    # --------------------------------------------------------
-    # INTEREST
-    # --------------------------------------------------------
-
+    # Interest
     result.loc[
-        result["Interest"].str.lower()
-        == str(interest).lower(),
+        result["Interest"].str.lower() ==
+        str(interest).lower(),
         "Match_Score"
     ] += 15
 
-
-    # --------------------------------------------------------
-    # EDUCATION
-    # --------------------------------------------------------
-
+    # Education
     result.loc[
-        result["Education"].str.lower()
-        == str(education).lower(),
+        result["Education"].str.lower() ==
+        str(education).lower(),
         "Match_Score"
     ] += 10
 
-
-    # --------------------------------------------------------
-    # CAREER GOAL
-    # --------------------------------------------------------
-
+    # Career Goal
     result.loc[
-        result["Career_Goal"].str.lower()
-        == str(career_goal).lower(),
+        result["Career_Goal"].str.lower() ==
+        str(career_goal).lower(),
         "Match_Score"
     ] += 15
 
-
-    # --------------------------------------------------------
-    # SKILLS
-    # --------------------------------------------------------
-
+    # Skills
     result.loc[
-        result["Skills"].str.lower()
-        == str(skills).lower(),
+        result["Skills"].str.lower() ==
+        str(skills).lower(),
         "Match_Score"
     ] += 10
 
-
-    # --------------------------------------------------------
-    # DIFFICULTY
-    # --------------------------------------------------------
-
+    # Difficulty
     result.loc[
-        result["Difficulty"].str.lower()
-        == str(difficulty).lower(),
+        result["Difficulty"].str.lower() ==
+        str(difficulty).lower(),
         "Match_Score"
     ] += 5
 
-
-    # --------------------------------------------------------
-    # JOB ROLE
-    # --------------------------------------------------------
-
+    # Job Role
     result.loc[
-        result["Job_Role"].str.lower()
-        == str(job_role).lower(),
+        result["Job_Role"].str.lower() ==
+        str(job_role).lower(),
         "Match_Score"
     ] += 10
 
-
-    # --------------------------------------------------------
-    # SALARY
-    # --------------------------------------------------------
-
+    # Salary
     result.loc[
-        result["Salary_Range"].str.lower()
-        == str(salary_range).lower(),
+        result["Salary_Range"].str.lower() ==
+        str(salary_range).lower(),
         "Match_Score"
     ] += 10
-
 
     # ========================================================
-    # SORT RESULTS
+    # SORT
     # ========================================================
 
     result = result.sort_values(
@@ -537,18 +416,7 @@ if recommend_button:
         ascending=[False, False]
     ).reset_index(drop=True)
 
-
-    if result.empty:
-
-        st.error(
-            "❌ No recommendation found."
-        )
-
-        st.stop()
-
-
     course = result.iloc[0]
-
 
     # ========================================================
     # COURSE NAME
@@ -561,77 +429,62 @@ if recommend_button:
         ).strip()
 
         if not course_name:
-
-            course_name = (
-                f"Course ID: {course['Course_ID']}"
-            )
+            course_name = f"Course ID: {course['Course_ID']}"
 
     else:
 
-        course_name = (
-            f"Course ID: {course['Course_ID']}"
-        )
+        course_name = f"Course ID: {course['Course_ID']}"
 
-
-    # ========================================================
-    # SCORE
-    # ========================================================
-
-    score = int(
-        course["Match_Score"]
-    )
-
-
-    percentage = min(
-        score,
-        100
-    )
-
+    score = int(course["Match_Score"])
+    percentage = min(score, 100)
 
     # ========================================================
-    # RESULT
+    # RESULT HEADER
     # ========================================================
 
     st.divider()
 
-    st.header("✨ Your Best Match")
+    st.header("🏆 Your Course Recommendation")
 
     st.success(
-        "🎉 Your personalized course recommendation has been generated!"
+        "🎉 We found a course that matches your learning profile!"
     )
-
 
     # ========================================================
     # BEST COURSE
     # ========================================================
 
-    col1, col2 = st.columns(
-        [2, 1]
+    st.subheader(
+        f"🎓 {course_name}"
     )
 
+    col1, col2 = st.columns([2, 1])
 
     with col1:
-
-        st.subheader(
-            f"🎓 {course_name}"
-        )
 
         st.write(
             f"**Course ID:** {course['Course_ID']}"
         )
 
         st.write(
-            f"**Category:** {course['Category']}"
+            f"**📚 Category:** {course['Category']}"
         )
 
         st.write(
-            f"**Career Goal:** {course['Career_Goal']}"
+            f"**📈 Skill Level:** {course['Skill_Level']}"
         )
 
         st.write(
-            f"**Target Job Role:** {course['Job_Role']}"
+            f"**💡 Interest:** {course['Interest']}"
         )
 
+        st.write(
+            f"**🎯 Career Goal:** {course['Career_Goal']}"
+        )
+
+        st.write(
+            f"**💼 Job Role:** {course['Job_Role']}"
+        )
 
     with col2:
 
@@ -644,6 +497,10 @@ if recommend_button:
             percentage / 100
         )
 
+        st.metric(
+            "⭐ Rating",
+            f"{course['Rating']} / 5"
+        )
 
     # ========================================================
     # MATCH MESSAGE
@@ -652,50 +509,38 @@ if recommend_button:
     if percentage >= 80:
 
         st.success(
-            "🔥 Excellent Match — this course is highly aligned with your profile!"
+            "🔥 Excellent Match! This course strongly matches your profile."
         )
 
     elif percentage >= 60:
 
         st.info(
-            "👍 Good Match — this course fits many of your preferences."
+            "👍 Good Match! This course matches many of your preferences."
         )
 
     else:
 
         st.warning(
-            "💡 Moderate Match — explore the Top 5 courses below."
+            "💡 Moderate Match. Check the Top 5 recommendations below."
         )
-
-
-    st.divider()
-
 
     # ========================================================
     # COURSE HIGHLIGHTS
     # ========================================================
 
+    st.divider()
+
     st.header("📌 Course Highlights")
 
+    duration = float(course["Duration_Months"])
 
-    duration = float(
-        course["Duration_Months"]
+    duration_text = (
+        f"{duration:g} Months"
+        if duration > 0
+        else "N/A"
     )
 
-
-    if duration > 0:
-
-        duration_text = (
-            f"{duration:g} Months"
-        )
-
-    else:
-
-        duration_text = "N/A"
-
-
     col1, col2, col3, col4 = st.columns(4)
-
 
     with col1:
 
@@ -704,7 +549,6 @@ if recommend_button:
             f"{course['Rating']} / 5"
         )
 
-
     with col2:
 
         st.metric(
@@ -712,32 +556,27 @@ if recommend_button:
             duration_text
         )
 
-
     with col3:
 
         st.metric(
-            "📈 Skill Level",
-            course["Skill_Level"]
+            "⚡ Difficulty",
+            course["Difficulty"]
         )
-
 
     with col4:
 
         st.metric(
-            "💰 Salary Range",
+            "💰 Salary",
             course["Salary_Range"]
         )
 
+    # ========================================================
+    # DETAILS TABS
+    # ========================================================
 
     st.divider()
 
-
-    # ========================================================
-    # DETAILS
-    # ========================================================
-
     st.header("📋 Course Details")
-
 
     tab1, tab2, tab3 = st.tabs(
         [
@@ -747,21 +586,19 @@ if recommend_button:
         ]
     )
 
-
     with tab1:
 
-        st.subheader("🛠️ Skills")
+        st.subheader("🛠️ Required Skills")
 
         st.info(
             course["Skills"]
         )
 
-        st.subheader("💡 Interest")
+        st.subheader("💡 Area of Interest")
 
         st.info(
             course["Interest"]
         )
-
 
     with tab2:
 
@@ -777,65 +614,54 @@ if recommend_button:
             course["Job_Role"]
         )
 
-        st.subheader("⚡ Difficulty")
+        st.subheader("⚡ Difficulty Level")
 
         st.warning(
             course["Difficulty"]
         )
 
-
     with tab3:
 
-        st.subheader("🎓 Education")
+        st.subheader("🎓 Required Education")
 
         st.info(
             course["Education"]
         )
 
-        st.subheader("📚 Category")
+        st.subheader("📚 Course Category")
 
         st.info(
             course["Category"]
         )
 
+    # ========================================================
+    # TOP 5
+    # ========================================================
 
     st.divider()
 
-
-    # ========================================================
-    # TOP 5 RECOMMENDATIONS
-    # ========================================================
-
-    st.header("🏆 Top 5 Recommended Courses")
+    st.header("🥇 Top 5 Recommended Courses")
 
     st.caption(
-        "Best alternative courses based on your profile."
+        "Alternative courses ranked according to your profile."
     )
 
-
     top5 = result.head(5)
-
 
     for index, row in top5.iterrows():
 
         rank = index + 1
-
 
         if (
             "Course_Name" in result.columns
             and str(row["Course_Name"]).strip()
         ):
 
-            name = str(
-                row["Course_Name"]
-            )
+            name = str(row["Course_Name"])
 
         else:
 
-            name = (
-                f"Course ID: {row['Course_ID']}"
-            )
-
+            name = f"Course ID: {row['Course_ID']}"
 
         with st.container(border=True):
 
@@ -843,26 +669,23 @@ if recommend_button:
                 [0.7, 4, 1.2]
             )
 
-
             with col1:
 
                 st.subheader(
                     f"#{rank}"
                 )
 
-
             with col2:
 
                 st.write(
-                    f"### 🎓 {name}"
+                    f"**🎓 {name}**"
                 )
 
                 st.caption(
-                    f"📚 {row['Category']}  |  "
-                    f"📈 {row['Skill_Level']}  |  "
+                    f"📚 {row['Category']}  •  "
+                    f"📈 {row['Skill_Level']}  •  "
                     f"⭐ {row['Rating']}"
                 )
-
 
             with col3:
 
@@ -871,22 +694,19 @@ if recommend_button:
                     f"{int(row['Match_Score'])}%"
                 )
 
-
 # ============================================================
 # HOW IT WORKS
 # ============================================================
 
 st.divider()
 
-st.header("🧠 How Smart Course Finder Works")
+st.header("🧠 How Course Recommendation Works")
 
 st.caption(
-    "Three simple steps to discover your learning path."
+    "Our recommendation process works in three simple steps."
 )
 
-
 col1, col2, col3 = st.columns(3)
-
 
 with col1:
 
@@ -899,10 +719,9 @@ with col1:
         )
 
         st.write(
-            "Select your education, skills, "
-            "interests and career preferences."
+            "Choose your education, skills, interests "
+            "and career preferences."
         )
-
 
 with col2:
 
@@ -915,11 +734,9 @@ with col2:
         )
 
         st.write(
-            "Your preferences are compared "
-            "with course attributes to calculate "
-            "a compatibility score."
+            "The system compares your preferences "
+            "with the available course information."
         )
-
 
 with col3:
 
@@ -928,14 +745,43 @@ with col3:
         st.subheader("03 🚀")
 
         st.write(
-            "### Get Your Recommendation"
+            "### Get Recommendations"
         )
 
         st.write(
-            "The highest-scoring courses are "
-            "ranked and displayed for you."
+            "Courses are ranked using a matching score "
+            "and the best options are displayed."
         )
 
+# ============================================================
+# FINAL INFORMATION
+# ============================================================
+
+st.divider()
+
+st.header("✨ Why Use Course Recommendation System?")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.info(
+        "🎯\n\n**Personalized**\n\nRecommendations based on your profile."
+    )
+
+with col2:
+    st.success(
+        "⚡\n\n**Fast**\n\nFind suitable courses quickly."
+    )
+
+with col3:
+    st.warning(
+        "📊\n\n**Data Driven**\n\nCourses ranked using profile matching."
+    )
+
+with col4:
+    st.error(
+        "🚀\n\n**Career Focused**\n\nDesigned around your career goals."
+    )
 
 # ============================================================
 # FOOTER
@@ -944,5 +790,6 @@ with col3:
 st.divider()
 
 st.caption(
-    "🎓 Smart Course Finder | Built with Python, Pandas & Streamlit"
+    "🎓 Course Recommendation System | "
+    "Built with Python, Pandas & Streamlit"
 )
