@@ -9,140 +9,88 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 # ============================================================
-# PAGE CONFIGURATION
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
     page_title="Course Recommendation System",
     page_icon="🎓",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
 
 # ============================================================
-# CUSTOM STREAMLIT SETTINGS
-# ============================================================
-
-st.markdown(
-    """
-    # 🎓 Course Recommendation System
-    ### 🤖 AI-Powered Personalized Learning Recommendations
-
-    Find the most suitable courses based on your **Interest, Career Goal,
-    Education, Skills and Skill Level**.
-    """
-)
-
-st.divider()
-
-
-# ============================================================
-# DATASET FILE
+# DATASET
 # ============================================================
 
 DATASET_FILE = "course_recommendation_dataset_1000.csv"
 
 
-# ============================================================
-# LOAD DATASET
-# ============================================================
-
 @st.cache_data
-def load_dataset():
+def load_data():
 
     if not os.path.exists(DATASET_FILE):
         return None
 
-    try:
+    data = pd.read_csv(DATASET_FILE)
 
-        data = pd.read_csv(DATASET_FILE)
+    data.columns = [
+        str(col).strip().lower().replace(" ", "_").replace("-", "_")
+        for col in data.columns
+    ]
 
-        # Clean column names
-        data.columns = [
-            str(col)
-            .strip()
-            .lower()
-            .replace(" ", "_")
-            .replace("-", "_")
-            for col in data.columns
-        ]
+    data = data.fillna("")
 
-        # Remove completely empty columns
-        data = data.dropna(axis=1, how="all")
-
-        # Fill missing values
-        data = data.fillna("")
-
-        return data
-
-    except Exception as error:
-
-        st.error(
-            f"Dataset load error: {error}"
-        )
-
-        return None
+    return data
 
 
-df = load_dataset()
+df = load_data()
 
-
-# ============================================================
-# DATASET NOT FOUND
-# ============================================================
 
 if df is None:
 
     st.error(
-        f"❌ `{DATASET_FILE}` सापडली नाही."
+        "course_recommendation_dataset_1000.csv was not found."
     )
 
     st.info(
-        "कृपया `course_recommendation_dataset_1000.csv` "
-        "ही file `app.py` च्या same folder मध्ये ठेवा."
+        "Keep the CSV file in the same folder as app.py."
     )
 
     st.stop()
 
 
 # ============================================================
-# COLUMN DETECTION FUNCTION
+# COLUMN DETECTION
 # ============================================================
 
-def find_column(possible_names):
+def detect_column(names):
 
-    for name in possible_names:
+    for name in names:
 
-        normalized = (
+        name = (
             name.lower()
             .strip()
             .replace(" ", "_")
             .replace("-", "_")
         )
 
-        if normalized in df.columns:
-            return normalized
+        if name in df.columns:
+            return name
 
     return None
 
 
-# ============================================================
-# DETECT IMPORTANT COLUMNS
-# ============================================================
-
-course_col = find_column([
+course_col = detect_column([
     "course",
     "course_name",
-    "coursename",
-    "title",
     "course_title",
+    "title",
     "program",
     "program_name"
 ])
 
-
-interest_col = find_column([
+interest_col = detect_column([
     "interest",
     "interests",
     "domain",
@@ -152,8 +100,7 @@ interest_col = find_column([
     "course_domain"
 ])
 
-
-career_col = find_column([
+career_col = detect_column([
     "career_goal",
     "career",
     "career_path",
@@ -164,8 +111,7 @@ career_col = find_column([
     "target_role"
 ])
 
-
-skills_col = find_column([
+skills_col = detect_column([
     "skills",
     "skill",
     "required_skills",
@@ -174,8 +120,7 @@ skills_col = find_column([
     "skill_set"
 ])
 
-
-education_col = find_column([
+education_col = detect_column([
     "education",
     "qualification",
     "eligibility",
@@ -184,8 +129,7 @@ education_col = find_column([
     "required_education"
 ])
 
-
-skill_level_col = find_column([
+level_col = detect_column([
     "skill_level",
     "level",
     "difficulty",
@@ -193,24 +137,21 @@ skill_level_col = find_column([
     "experience_level"
 ])
 
-
-duration_col = find_column([
+duration_col = detect_column([
     "duration",
     "course_duration",
     "duration_months",
     "course_length"
 ])
 
-
-rating_col = find_column([
+rating_col = detect_column([
     "rating",
     "course_rating",
     "ratings",
     "review_rating"
 ])
 
-
-salary_col = find_column([
+salary_col = detect_column([
     "salary",
     "salary_range",
     "expected_salary",
@@ -220,30 +161,10 @@ salary_col = find_column([
 ])
 
 
-# ============================================================
-# FALLBACK COURSE COLUMN
-# ============================================================
-
-if course_col is None:
-
-    # Try to find a suitable text column
-    for column in df.columns:
-
-        if df[column].dtype == "object":
-
-            course_col = column
-
-            break
-
-
-# ============================================================
-# VALIDATE COURSE COLUMN
-# ============================================================
-
 if course_col is None:
 
     st.error(
-        "❌ Dataset मध्ये Course Name column सापडला नाही."
+        "Course column could not be detected."
     )
 
     st.write(
@@ -258,42 +179,37 @@ if course_col is None:
 
 
 # ============================================================
-# TEXT CLEANING
+# TEXT NORMALIZATION
 # ============================================================
 
-def clean_text(value):
+def normalize(text):
 
-    if value is None:
+    if text is None:
         return ""
 
-    if pd.isna(value):
-        return ""
+    text = str(text).lower().strip()
 
-    value = str(value).lower()
+    text = text.replace("&", " and ")
 
-    value = value.replace("&", " and ")
+    text = text.replace("/", " ")
 
-    value = value.replace("/", " ")
-
-    value = value.replace(",", " ")
-
-    value = re.sub(
+    text = re.sub(
         r"[^a-zA-Z0-9+#.\s]",
         " ",
-        value
+        text
     )
 
-    value = re.sub(
+    text = re.sub(
         r"\s+",
         " ",
-        value
+        text
     )
 
-    return value.strip()
+    return text.strip()
 
 
 # ============================================================
-# GET SAFE VALUE
+# GET VALUE
 # ============================================================
 
 def get_value(row, column):
@@ -304,127 +220,77 @@ def get_value(row, column):
     if column not in row.index:
         return ""
 
-    return clean_text(
-        row[column]
-    )
-
-
-# ============================================================
-# ORIGINAL VALUE
-# ============================================================
-
-def get_original_value(row, column):
-
-    if column is None:
-        return "Not specified"
-
-    if column not in row.index:
-        return "Not specified"
-
     value = row[column]
 
     if pd.isna(value):
-        return "Not specified"
+        return ""
 
-    value = str(value).strip()
-
-    if value == "":
-        return "Not specified"
-
-    return value
+    return str(value).strip()
 
 
 # ============================================================
-# RELATED DOMAIN KNOWLEDGE
+# RELATED AI DOMAINS
 # ============================================================
 
-RELATED_DOMAINS = {
+RELATED_TERMS = {
 
     "artificial intelligence": [
         "artificial intelligence",
         "ai",
         "machine learning",
         "deep learning",
-        "data science",
-        "neural networks",
+        "neural network",
+        "computer vision",
         "natural language processing",
         "nlp",
-        "computer vision",
-        "generative ai"
+        "generative ai",
+        "data science"
     ],
 
     "ai": [
         "artificial intelligence",
+        "ai",
         "machine learning",
         "deep learning",
-        "data science",
-        "neural networks",
-        "nlp",
+        "neural network",
         "computer vision",
-        "generative ai"
+        "natural language processing",
+        "nlp",
+        "generative ai",
+        "data science"
     ],
 
     "machine learning": [
         "machine learning",
         "artificial intelligence",
+        "ai",
         "deep learning",
+        "neural network",
         "data science",
-        "predictive analytics",
-        "neural networks"
+        "predictive analytics"
     ],
 
     "deep learning": [
         "deep learning",
         "machine learning",
         "artificial intelligence",
-        "neural networks",
+        "ai",
+        "neural network",
         "computer vision",
-        "natural language processing",
-        "nlp"
+        "nlp",
+        "natural language processing"
     ],
 
     "data science": [
         "data science",
         "machine learning",
         "artificial intelligence",
+        "ai",
         "data analytics",
         "statistics",
         "python",
         "pandas",
         "sql"
-    ],
-
-    "data analytics": [
-        "data analytics",
-        "data analysis",
-        "data science",
-        "business intelligence",
-        "python",
-        "sql",
-        "power bi",
-        "tableau"
-    ],
-
-    "web development": [
-        "web development",
-        "frontend development",
-        "backend development",
-        "full stack development",
-        "javascript",
-        "react",
-        "html",
-        "css"
-    ],
-
-    "full stack development": [
-        "full stack development",
-        "web development",
-        "frontend",
-        "backend",
-        "javascript",
-        "react",
-        "node",
-        "database"
     ],
 
     "cloud computing": [
@@ -433,8 +299,8 @@ RELATED_DOMAINS = {
         "azure",
         "google cloud",
         "cloud engineer",
-        "devops",
-        "cloud architecture"
+        "cloud architecture",
+        "devops"
     ],
 
     "cyber security": [
@@ -453,6 +319,17 @@ RELATED_DOMAINS = {
         "network security",
         "information security",
         "penetration testing"
+    ],
+
+    "web development": [
+        "web development",
+        "frontend",
+        "backend",
+        "full stack",
+        "javascript",
+        "react",
+        "html",
+        "css"
     ],
 
     "python": [
@@ -489,96 +366,72 @@ RELATED_DOMAINS = {
 # EXPAND RELATED TERMS
 # ============================================================
 
-def expand_related_terms(text):
+def expand_terms(text):
 
-    text = clean_text(text)
+    text = normalize(text)
 
-    if not text:
-        return ""
+    result = [text]
 
-    terms = [text]
-
-    for key, related_terms in RELATED_DOMAINS.items():
+    for key, values in RELATED_TERMS.items():
 
         if key in text:
 
-            terms.extend(
-                related_terms
-            )
+            result.extend(values)
 
-    return " ".join(terms)
+    return " ".join(result)
 
 
 # ============================================================
-# TOKENIZATION
+# WORD MATCH
 # ============================================================
 
-def get_tokens(text):
+def word_match(user_text, course_text):
 
-    text = clean_text(text)
-
-    if not text:
-        return set()
-
-    return set(
-        text.split()
-    )
-
-
-# ============================================================
-# TOKEN SIMILARITY
-# ============================================================
-
-def token_similarity(
-    user_text,
-    course_text
-):
-
-    user_tokens = get_tokens(
-        user_text
-    )
-
-    course_tokens = get_tokens(
-        course_text
-    )
-
-    if not user_tokens:
-        return 0.0
-
-    if not course_tokens:
-        return 0.0
-
-    common_tokens = (
-        user_tokens
-        .intersection(course_tokens)
-    )
-
-    return (
-        len(common_tokens)
-        /
-        len(user_tokens)
-    )
-
-
-# ============================================================
-# EXACT / PHRASE MATCH
-# ============================================================
-
-def phrase_match(
-    user_text,
-    course_text
-):
-
-    user_text = clean_text(
-        user_text
-    )
-
-    course_text = clean_text(
-        course_text
-    )
+    user_text = normalize(user_text)
+    course_text = normalize(course_text)
 
     if not user_text or not course_text:
         return 0.0
+
+    user_words = set(user_text.split())
+    course_words = set(course_text.split())
+
+    if not user_words:
+        return 0.0
+
+    common = user_words.intersection(course_words)
+
+    return len(common) / len(user_words)
+
+
+# ============================================================
+# RELATED MATCH
+# ============================================================
+
+def related_match(user_text, course_text):
+
+    expanded = expand_terms(user_text)
+
+    return word_match(
+        expanded,
+        course_text
+    )
+
+
+# ============================================================
+# EXACT / PARTIAL MATCH
+# ============================================================
+
+def direct_match(user_text, course_text):
+
+    user_text = normalize(user_text)
+    course_text = normalize(course_text)
+
+    if not user_text or not course_text:
+        return 0.0
+
+    if user_text == course_text:
+        return 1.0
 
     if user_text in course_text:
         return 1.0
@@ -590,60 +443,64 @@ def phrase_match(
         if user_words[0] in course_text.split():
             return 1.0
 
-    return 0.0
+    return word_match(
+        user_text,
+        course_text
+    )
 
 
 # ============================================================
-# SKILL MATCHING
+# SKILL MATCH
 # ============================================================
 
-def skill_matching(
-    user_skills,
-    course_skills
-):
+def skill_match(user_skills, course_skills):
 
-    user_skill_list = [
-        x.strip()
-        for x in re.split(
-            r",|;|\|",
-            clean_text(user_skills)
-        )
-        if x.strip()
-    ]
+    user_skills = normalize(
+        user_skills
+    )
 
-    course_skill_list = [
-        x.strip()
-        for x in re.split(
-            r",|;|\|",
-            clean_text(course_skills)
-        )
-        if x.strip()
-    ]
+    course_skills = normalize(
+        course_skills
+    )
 
-    if not user_skill_list:
+    if not user_skills or not course_skills:
         return 0.0
 
-    if not course_skill_list:
+    user_list = re.split(
+        r",|;|\|",
+        user_skills
+    )
+
+    user_list = [
+        x.strip()
+        for x in user_list
+        if x.strip()
+    ]
+
+    if not user_list:
         return 0.0
 
     matched = 0
 
-    for user_skill in user_skill_list:
+    for skill in user_list:
 
-        for course_skill in course_skill_list:
+        if skill in course_skills:
 
-            if (
-                user_skill in course_skill
-                or
-                course_skill in user_skill
-            ):
+            matched += 1
 
-                matched += 1
+            continue
 
-                break
+        related = expand_terms(skill)
+
+        if any(
+            term in course_skills
+            for term in related.split()
+        ):
+
+            matched += 1
 
     return min(
-        matched / len(user_skill_list),
+        matched / len(user_list),
         1.0
     )
 
@@ -652,70 +509,91 @@ def skill_matching(
 # EDUCATION MATCH
 # ============================================================
 
-def education_matching(
-    user_education,
-    course_education
-):
+def education_match(user_education, course_education):
 
-    user_text = clean_text(
+    user = normalize(
         user_education
     )
 
-    course_text = clean_text(
+    course = normalize(
         course_education
     )
 
-    if not user_text or not course_text:
+    if not user or not course:
         return 0.0
 
-    # Exact phrase
-    if user_text in course_text:
+    if user == course:
         return 1.0
 
-    # Common education keywords
-    education_keywords = [
-        "10th",
-        "12th",
-        "diploma",
-        "graduate",
-        "graduation",
-        "bachelor",
-        "btech",
-        "b.e",
-        "be",
-        "bsc",
-        "bca",
-        "master",
-        "masters",
-        "mtech",
-        "mca",
-        "msc",
-        "postgraduate",
-        "pg"
-    ]
+    if user in course:
+        return 1.0
 
-    user_found = [
-        word
-        for word in education_keywords
-        if word in user_text
-    ]
+    if course in user:
+        return 1.0
 
-    course_found = [
-        word
-        for word in education_keywords
-        if word in course_text
-    ]
+    education_groups = {
 
-    if not user_found or not course_found:
-        return token_similarity(
-            user_text,
-            course_text
-        )
+        "10th": [
+            "10th",
+            "secondary"
+        ],
 
-    if set(user_found).intersection(
-        set(course_found)
-    ):
+        "12th": [
+            "12th",
+            "higher secondary",
+            "hsc"
+        ],
 
+        "diploma": [
+            "diploma"
+        ],
+
+        "graduate": [
+            "graduate",
+            "graduation",
+            "bachelor",
+            "btech",
+            "b.e",
+            "be",
+            "bca",
+            "bsc"
+        ],
+
+        "postgraduate": [
+            "postgraduate",
+            "post graduation",
+            "master",
+            "masters",
+            "mtech",
+            "mca",
+            "msc",
+            "mba"
+        ]
+    }
+
+    user_group = None
+    course_group = None
+
+    for group, words in education_groups.items():
+
+        if any(
+            word in user
+            for word in words
+        ):
+
+            user_group = group
+
+        if any(
+            word in course
+            for word in words
+        ):
+
+            course_group = group
+
+    if user_group is None or course_group is None:
+        return 0.0
+
+    if user_group == course_group:
         return 1.0
 
     return 0.0
@@ -725,32 +603,32 @@ def education_matching(
 # SKILL LEVEL MATCH
 # ============================================================
 
-def level_matching(
-    user_level,
-    course_level
-):
+def level_match(user_level, course_level):
 
-    user_level = clean_text(
+    user = normalize(
         user_level
     )
 
-    course_level = clean_text(
+    course = normalize(
         course_level
     )
 
-    if not user_level or not course_level:
+    if not user or not course:
         return 0.0
 
-    if user_level == course_level:
+    if user == course:
         return 1.0
 
-    level_aliases = {
+    if user in course:
+        return 1.0
+
+    level_map = {
 
         "beginner": [
             "beginner",
             "basic",
-            "entry",
-            "foundation"
+            "foundation",
+            "entry"
         ],
 
         "intermediate": [
@@ -768,159 +646,56 @@ def level_matching(
     user_group = None
     course_group = None
 
-    for group, values in level_aliases.items():
+    for group, words in level_map.items():
 
         if any(
-            value in user_level
-            for value in values
+            word in user
+            for word in words
         ):
-
             user_group = group
 
         if any(
-            value in course_level
-            for value in values
+            word in course
+            for word in words
         ):
-
             course_group = group
 
     if user_group == course_group:
         return 1.0
 
-    if user_group == "advanced" and course_group == "intermediate":
-        return 0.75
-
-    if user_group == "intermediate" and course_group == "beginner":
-        return 0.70
-
-    if user_group == "beginner" and course_group == "intermediate":
-        return 0.55
-
-    return 0.25
-
-
-# ============================================================
-# CREATE COURSE PROFILE
-# ============================================================
-
-def create_course_profile(row):
-
-    values = [
-
-        get_value(
-            row,
-            course_col
-        ),
-
-        get_value(
-            row,
-            interest_col
-        ),
-
-        get_value(
-            row,
-            career_col
-        ),
-
-        get_value(
-            row,
-            skills_col
-        ),
-
-        get_value(
-            row,
-            education_col
-        ),
-
-        get_value(
-            row,
-            skill_level_col
-        )
-    ]
-
-    return " ".join(
-        value
-        for value in values
-        if value
-    )
-
-
-# ============================================================
-# CREATE USER PROFILE
-# ============================================================
-
-def create_user_profile(
-    interest,
-    career_goal,
-    education,
-    skills,
-    skill_level
-):
-
-    return " ".join([
-
-        expand_related_terms(
-            interest
-        ),
-
-        expand_related_terms(
-            career_goal
-        ),
-
-        clean_text(
-            education
-        ),
-
-        expand_related_terms(
-            skills
-        ),
-
-        clean_text(
-            skill_level
-        )
-    ])
+    return 0.0
 
 
 # ============================================================
 # NLP SIMILARITY
 # ============================================================
 
-def calculate_nlp_similarity(
+def calculate_nlp_score(
     user_profile,
     course_profiles
 ):
 
-    if not user_profile.strip():
-        return np.zeros(
-            len(course_profiles)
-        )
-
     documents = [
         user_profile
-    ]
-
-    documents.extend(
-        course_profiles
-    )
+    ] + course_profiles
 
     try:
 
         vectorizer = TfidfVectorizer(
             stop_words="english",
-            ngram_range=(1, 2),
-            min_df=1
+            ngram_range=(1, 2)
         )
 
         matrix = vectorizer.fit_transform(
             documents
         )
 
-        similarities = cosine_similarity(
+        scores = cosine_similarity(
             matrix[0:1],
             matrix[1:]
         )[0]
 
-        return similarities
+        return scores
 
     except Exception:
 
@@ -930,10 +705,38 @@ def calculate_nlp_similarity(
 
 
 # ============================================================
+# COURSE PROFILE
+# ============================================================
+
+def course_profile(row):
+
+    values = [
+
+        get_value(row, course_col),
+
+        get_value(row, interest_col),
+
+        get_value(row, career_col),
+
+        get_value(row, skills_col),
+
+        get_value(row, education_col),
+
+        get_value(row, level_col)
+    ]
+
+    return " ".join(
+        normalize(x)
+        for x in values
+        if x
+    )
+
+
+# ============================================================
 # RECOMMENDATION ENGINE
 # ============================================================
 
-def generate_recommendations(
+def recommend_courses(
     interest,
     career_goal,
     education,
@@ -941,68 +744,44 @@ def generate_recommendations(
     skill_level
 ):
 
-    results = df.copy()
+    result = df.copy()
 
-    # --------------------------------------------------------
-    # User Profile
-    # --------------------------------------------------------
+    course_profiles = [
 
-    user_profile = create_user_profile(
+        course_profile(row)
 
-        interest,
+        for _, row in result.iterrows()
+    ]
 
-        career_goal,
+    user_profile = " ".join([
 
-        education,
+        expand_terms(interest),
 
-        skills,
+        expand_terms(career_goal),
 
-        skill_level
-    )
+        normalize(education),
 
-    # --------------------------------------------------------
-    # Course Profiles
-    # --------------------------------------------------------
+        expand_terms(skills),
 
-    course_profiles = []
+        normalize(skill_level)
+    ])
 
-    for _, row in results.iterrows():
-
-        course_profiles.append(
-            create_course_profile(
-                row
-            )
-        )
-
-    # --------------------------------------------------------
-    # NLP Scores
-    # --------------------------------------------------------
-
-    nlp_scores = calculate_nlp_similarity(
+    nlp_scores = calculate_nlp_score(
         user_profile,
         course_profiles
     )
 
-    results["NLP_Score"] = (
-        nlp_scores * 100
-    )
-
-    # --------------------------------------------------------
-    # Individual Scores
-    # --------------------------------------------------------
+    final_scores = []
 
     interest_scores = []
     career_scores = []
     skill_scores = []
     education_scores = []
     level_scores = []
-    related_scores = []
 
-    # --------------------------------------------------------
-    # Calculate Each Course
-    # --------------------------------------------------------
-
-    for _, row in results.iterrows():
+    for i, (_, row) in enumerate(
+        result.iterrows()
+    ):
 
         course_name = get_value(
             row,
@@ -1031,18 +810,12 @@ def generate_recommendations(
 
         course_level = get_value(
             row,
-            skill_level_col
+            level_col
         )
 
         # ----------------------------------------------------
-        # Interest
+        # INTEREST
         # ----------------------------------------------------
-
-        expanded_user_interest = (
-            expand_related_terms(
-                interest
-            )
-        )
 
         interest_text = (
             course_interest
@@ -1052,27 +825,20 @@ def generate_recommendations(
 
         interest_score = max(
 
-            token_similarity(
-                expanded_user_interest,
+            direct_match(
+                interest,
                 interest_text
             ),
 
-            phrase_match(
-                clean_text(interest),
+            related_match(
+                interest,
                 interest_text
             )
-
         )
 
         # ----------------------------------------------------
-        # Career
+        # CAREER
         # ----------------------------------------------------
-
-        expanded_user_career = (
-            expand_related_terms(
-                career_goal
-            )
-        )
 
         career_text = (
             course_career
@@ -1082,223 +848,155 @@ def generate_recommendations(
 
         career_score = max(
 
-            token_similarity(
-                expanded_user_career,
+            direct_match(
+                career_goal,
                 career_text
             ),
 
-            phrase_match(
-                clean_text(career_goal),
+            related_match(
+                career_goal,
                 career_text
             )
-
         )
 
         # ----------------------------------------------------
-        # Skills
+        # SKILLS
         # ----------------------------------------------------
 
-        skill_score = skill_matching(
-
+        skill_score = skill_match(
             skills,
-
             course_skills
-            + " "
-            + course_name
-
-        )
-
-        # Also use token similarity for skills
-        skill_score = max(
-
-            skill_score,
-
-            token_similarity(
-                expand_related_terms(skills),
-                course_skills
-                + " "
-                + course_name
-            )
-
         )
 
         # ----------------------------------------------------
-        # Education
+        # EDUCATION
         # ----------------------------------------------------
 
-        education_score = education_matching(
-
+        education_score = education_match(
             education,
-
             course_education
-
         )
 
         # ----------------------------------------------------
-        # Skill Level
+        # LEVEL
         # ----------------------------------------------------
 
-        level_score = level_matching(
-
+        level_score = level_match(
             skill_level,
-
             course_level
-
         )
 
         # ----------------------------------------------------
-        # Related Course Score
+        # SCORE
         # ----------------------------------------------------
 
-        related_score = max(
+        nlp_score = nlp_scores[i]
 
-            token_similarity(
-                expanded_user_interest,
-                create_course_profile(row)
-            ),
+        # Strong profile-based weighting
+        score = (
 
-            token_similarity(
-                expanded_user_career,
-                create_course_profile(row)
-            )
+            interest_score * 30
 
+            +
+
+            career_score * 30
+
+            +
+
+            skill_score * 15
+
+            +
+
+            education_score * 10
+
+            +
+
+            level_score * 5
+
+            +
+
+            nlp_score * 10
         )
 
         # ----------------------------------------------------
-        # Store Scores
+        # EXACT MATCH BONUS
         # ----------------------------------------------------
+
+        exact_matches = 0
+
+        if direct_match(
+            interest,
+            interest_text
+        ) >= 1:
+            exact_matches += 1
+
+        if direct_match(
+            career_goal,
+            career_text
+        ) >= 1:
+            exact_matches += 1
+
+        if education_score >= 1:
+            exact_matches += 1
+
+        if skill_score >= 1:
+            exact_matches += 1
+
+        # Give a bonus when multiple profile fields
+        # directly match the course.
+        score += exact_matches * 3
+
+        score = min(
+            score,
+            100
+        )
+
+        final_scores.append(
+            score
+        )
 
         interest_scores.append(
-            interest_score
+            interest_score * 100
         )
 
         career_scores.append(
-            career_score
+            career_score * 100
         )
 
         skill_scores.append(
-            skill_score
+            skill_score * 100
         )
 
         education_scores.append(
-            education_score
+            education_score * 100
         )
 
         level_scores.append(
-            level_score
+            level_score * 100
         )
 
-        related_scores.append(
-            related_score
-        )
+    result["AI_Score"] = final_scores
 
-    # --------------------------------------------------------
-    # Add Individual Scores
-    # --------------------------------------------------------
+    result["Interest_Match"] = interest_scores
 
-    results["Interest_Score"] = (
-        np.array(interest_scores) * 100
-    )
+    result["Career_Match"] = career_scores
 
-    results["Career_Score"] = (
-        np.array(career_scores) * 100
-    )
+    result["Skill_Match"] = skill_scores
 
-    results["Skill_Score"] = (
-        np.array(skill_scores) * 100
-    )
+    result["Education_Match"] = education_scores
 
-    results["Education_Score"] = (
-        np.array(education_scores) * 100
-    )
+    result["Level_Match"] = level_scores
 
-    results["Level_Score"] = (
-        np.array(level_scores) * 100
-    )
-
-    results["Related_Score"] = (
-        np.array(related_scores) * 100
-    )
-
-    # --------------------------------------------------------
-    # FINAL WEIGHTED SCORE
-    #
-    # Interest       = 25%
-    # Career Goal    = 25%
-    # Skills         = 20%
-    # Education      = 10%
-    # Skill Level    = 5%
-    # NLP Similarity = 15%
-    # --------------------------------------------------------
-
-    base_score = (
-
-        results["Interest_Score"] * 0.25
-
-        +
-
-        results["Career_Score"] * 0.25
-
-        +
-
-        results["Skill_Score"] * 0.20
-
-        +
-
-        results["Education_Score"] * 0.10
-
-        +
-
-        results["Level_Score"] * 0.05
-
-        +
-
-        results["NLP_Score"] * 0.15
-
-    )
-
-    # --------------------------------------------------------
-    # Related Domain Boost
-    # --------------------------------------------------------
-
-    related_boost = (
-        results["Related_Score"] * 0.05
-    )
-
-    final_score = (
-        base_score
-        +
-        related_boost
-    )
-
-    # --------------------------------------------------------
-    # Prevent Unrealistic 100% Scores
-    # --------------------------------------------------------
-
-    final_score = np.clip(
-        final_score,
-        0,
-        99.0
-    )
-
-    results["AI_Score"] = (
-        final_score
-    )
-
-    # --------------------------------------------------------
-    # Sort
-    # --------------------------------------------------------
-
-    results = results.sort_values(
-        by="AI_Score",
+    result = result.sort_values(
+        "AI_Score",
         ascending=False
     )
 
-    results = results.reset_index(
+    result = result.reset_index(
         drop=True
     )
 
-    return results
+    return result
 
 
 # ============================================================
@@ -1307,10 +1005,14 @@ def generate_recommendations(
 
 with st.sidebar:
 
-    st.header("👤 Your Profile")
+    st.header(
+        "👤 Your Profile"
+    )
 
-    st.caption(
-        "Tell us about yourself and AI will find the best courses."
+    st.write(
+        "Enter your profile details. "
+        "Course information is automatically loaded "
+        "from the dataset."
     )
 
     st.divider()
@@ -1327,12 +1029,12 @@ with st.sidebar:
 
     education = st.text_input(
         "🎓 Education",
-        placeholder="Example: 12th Pass"
+        placeholder="Example: Diploma"
     )
 
     skills = st.text_input(
         "🛠️ Your Skills",
-        placeholder="Example: Python, Pandas, SQL"
+        placeholder="Example: Python, SQL"
     )
 
     skill_level = st.selectbox(
@@ -1346,104 +1048,97 @@ with st.sidebar:
 
     st.divider()
 
-    get_recommendations = st.button(
+    recommend_button = st.button(
         "✨ Get AI Recommendations",
-        use_container_width=True,
-        type="primary"
-    )
-
-    st.divider()
-
-    st.caption(
-        "🤖 AI Engine"
-    )
-
-    st.caption(
-        "Weighted Matching + NLP Similarity"
+        type="primary",
+        use_container_width=True
     )
 
 
 # ============================================================
-# INITIAL SCREEN
+# HOME SCREEN
 # ============================================================
 
-if not get_recommendations:
+if not recommend_button:
+
+    st.title(
+        "🎓 Course Recommendation System"
+    )
+
+    st.subheader(
+        "🤖 AI-Powered Personalized Course Recommendations"
+    )
+
+    st.write(
+        "Enter your Interest, Career Goal, Education, "
+        "Skills and Skill Level from the sidebar."
+    )
 
     st.info(
-        "👈 Enter your profile details from the sidebar "
-        "and click **✨ Get AI Recommendations**."
+        "Course name, duration, rating, salary, "
+        "career role and other course information "
+        "are automatically taken from the CSV dataset."
     )
-
-    st.subheader(
-        "🧠 How Recommendation Works"
-    )
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-
-        st.info(
-            "💡 **Interest Matching**\n\n"
-            "Your interests are matched with course domains "
-            "and related technologies."
-        )
-
-    with col2:
-
-        st.info(
-            "🎯 **Career Matching**\n\n"
-            "Your career goal is compared with the recommended "
-            "career role for every course."
-        )
-
-    with col3:
-
-        st.info(
-            "🧠 **NLP Matching**\n\n"
-            "TF-IDF and cosine similarity identify related "
-            "course profiles."
-        )
 
     st.divider()
 
     st.subheader(
-        "📊 Dataset Information"
+        "How It Works"
     )
 
-    info1, info2, info3 = st.columns(3)
+    c1, c2, c3, c4 = st.columns(4)
 
-    with info1:
+    with c1:
 
-        st.metric(
-            "📚 Total Courses",
-            len(df)
+        st.write(
+            "💡 Interest"
         )
 
-    with info2:
-
-        st.metric(
-            "🧾 Dataset Columns",
-            len(df.columns)
+        st.caption(
+            "Identifies courses related to your interest."
         )
 
-    with info3:
+    with c2:
 
-        st.metric(
-            "🤖 AI Engine",
-            "NLP + Weighted"
+        st.write(
+            "🎯 Career"
+        )
+
+        st.caption(
+            "Matches your target career role."
+        )
+
+    with c3:
+
+        st.write(
+            "🛠️ Skills"
+        )
+
+        st.caption(
+            "Checks your current skills."
+        )
+
+    with c4:
+
+        st.write(
+            "🧠 AI + NLP"
+        )
+
+        st.caption(
+            "Finds related courses using NLP similarity."
         )
 
     st.stop()
 
 
 # ============================================================
-# INPUT VALIDATION
+# VALIDATION
 # ============================================================
 
 if not interest.strip():
 
     st.error(
-        "⚠️ Please enter your Interest."
+        "Please enter your Interest."
     )
 
     st.stop()
@@ -1452,7 +1147,7 @@ if not interest.strip():
 if not career_goal.strip():
 
     st.error(
-        "⚠️ Please enter your Career Goal."
+        "Please enter your Career Goal."
     )
 
     st.stop()
@@ -1461,7 +1156,7 @@ if not career_goal.strip():
 if not education.strip():
 
     st.error(
-        "⚠️ Please enter your Education."
+        "Please enter your Education."
     )
 
     st.stop()
@@ -1470,21 +1165,21 @@ if not education.strip():
 if not skills.strip():
 
     st.error(
-        "⚠️ Please enter your Skills."
+        "Please enter your Skills."
     )
 
     st.stop()
 
 
 # ============================================================
-# GENERATE RECOMMENDATIONS
+# GENERATE
 # ============================================================
 
 with st.spinner(
-    "🤖 AI is analyzing your profile and finding the best courses..."
+    "AI is analyzing your profile..."
 ):
 
-    recommendations = generate_recommendations(
+    recommendations = recommend_courses(
 
         interest,
 
@@ -1495,7 +1190,6 @@ with st.spinner(
         skills,
 
         skill_level
-
     )
 
 
@@ -1503,17 +1197,13 @@ with st.spinner(
 # RESULT HEADER
 # ============================================================
 
-st.success(
-    "✨ AI recommendations generated successfully!"
-)
-
-st.header(
+st.title(
     "✨ AI Recommended Courses"
 )
 
 st.write(
-    "Recommendations are generated using weighted profile "
-    "matching and NLP-based similarity."
+    "These recommendations are generated from your profile "
+    "and the course dataset."
 )
 
 
@@ -1521,63 +1211,67 @@ st.write(
 # USER PROFILE SUMMARY
 # ============================================================
 
-with st.expander(
-    "👤 View Your Profile"
-):
+st.subheader(
+    "👤 Your Profile"
+)
 
-    profile_col1, profile_col2 = st.columns(2)
+p1, p2, p3, p4, p5 = st.columns(5)
 
-    with profile_col1:
+with p1:
+    st.write("💡 Interest")
+    st.write(interest)
 
-        st.write(
-            f"💡 **Interest:** {interest}"
-        )
+with p2:
+    st.write("🎯 Career Goal")
+    st.write(career_goal)
 
-        st.write(
-            f"🎯 **Career Goal:** {career_goal}"
-        )
+with p3:
+    st.write("🎓 Education")
+    st.write(education)
 
-        st.write(
-            f"🎓 **Education:** {education}"
-        )
+with p4:
+    st.write("🛠️ Skills")
+    st.write(skills)
 
-    with profile_col2:
-
-        st.write(
-            f"🛠️ **Skills:** {skills}"
-        )
-
-        st.write(
-            f"📊 **Skill Level:** {skill_level}"
-        )
+with p5:
+    st.write("📊 Skill Level")
+    st.write(skill_level)
 
 
 st.divider()
 
 
 # ============================================================
-# TOP MATCH
+# TOP RECOMMENDATION
 # ============================================================
 
-top_course = recommendations.iloc[0]
+best = recommendations.iloc[0]
 
-top_score = float(
-    top_course["AI_Score"]
+best_course = get_value(
+    best,
+    course_col
+)
+
+best_score = float(
+    best["AI_Score"]
 )
 
 st.subheader(
-    "🏆 Best Course For You"
+    "🏆 Best Match"
 )
 
 st.success(
-    f"🎯 **{get_original_value(top_course, course_col)}** "
-    f"is your Top AI Match with **{top_score:.0f}%** compatibility."
+    f"{best_course} — {best_score:.0f}% AI Match"
 )
 
 
 # ============================================================
-# RECOMMENDATION CARDS
+# TOP 5 RECOMMENDATIONS
 # ============================================================
+
+st.subheader(
+    "📚 Recommended Courses"
+)
 
 top_n = min(
     5,
@@ -1585,462 +1279,253 @@ top_n = min(
 )
 
 
-for index in range(top_n):
+for i in range(top_n):
 
-    row = recommendations.iloc[index]
+    row = recommendations.iloc[i]
 
-    rank = index + 1
+    course_name = get_value(
+        row,
+        course_col
+    )
 
     score = float(
         row["AI_Score"]
     )
 
-    course_name = get_original_value(
-        row,
-        course_col
-    )
-
-    role = get_original_value(
+    role = get_value(
         row,
         career_col
     )
 
-    # --------------------------------------------------------
-    # Rank
-    # --------------------------------------------------------
+    st.markdown(
+        f"### {i + 1}. {course_name}"
+    )
 
-    if rank == 1:
+    st.progress(
+        min(score / 100, 1.0)
+    )
 
-        rank_title = "🏆 TOP MATCH"
+    st.write(
+        f"AI Match Score: **{score:.0f}%**"
+    )
 
-    elif rank == 2:
-
-        rank_title = "🥈 SECOND BEST"
-
-    elif rank == 3:
-
-        rank_title = "🥉 THIRD BEST"
-
-    else:
-
-        rank_title = f"⭐ RECOMMENDATION #{rank}"
+    st.write(
+        f"Recommended Role: **{role if role else 'Not specified'}**"
+    )
 
     # --------------------------------------------------------
-    # Course Container
+    # INFORMATION COMES AUTOMATICALLY FROM DATASET
     # --------------------------------------------------------
 
-    with st.container(
-        border=True
+    info1, info2, info3, info4 = st.columns(4)
+
+    with info1:
+
+        st.write("🎓 Education")
+
+        st.write(
+            get_value(
+                row,
+                education_col
+            ) or "Not specified"
+        )
+
+    with info2:
+
+        st.write("⏱️ Duration")
+
+        st.write(
+            get_value(
+                row,
+                duration_col
+            ) or "Not specified"
+        )
+
+    with info3:
+
+        st.write("⭐ Rating")
+
+        st.write(
+            get_value(
+                row,
+                rating_col
+            ) or "Not specified"
+        )
+
+    with info4:
+
+        st.write("💰 Salary")
+
+        st.write(
+            get_value(
+                row,
+                salary_col
+            ) or "Not specified"
+        )
+
+    st.write("🛠️ Course Skills")
+
+    st.write(
+        get_value(
+            row,
+            skills_col
+        ) or "Not specified"
+    )
+
+    with st.expander(
+        "View AI Match Details"
     ):
 
-        st.subheader(
-            rank_title
-        )
+        b1, b2, b3 = st.columns(3)
 
-        st.markdown(
-            f"### 📚 {course_name}"
-        )
-
-        st.write(
-            f"💼 **Recommended Role:** {role}"
-        )
-
-        # ----------------------------------------------------
-        # Score
-        # ----------------------------------------------------
-
-        st.progress(
-            min(score / 100, 1.0)
-        )
-
-        score_col1, score_col2 = st.columns(2)
-
-        with score_col1:
+        with b1:
 
             st.metric(
-                "🤖 AI Match Score",
-                f"{score:.0f}%"
+                "Interest",
+                f"{row['Interest_Match']:.0f}%"
             )
 
-        with score_col2:
+        with b2:
 
-            if score >= 85:
-
-                st.success(
-                    "🔥 Excellent Match"
-                )
-
-            elif score >= 70:
-
-                st.info(
-                    "👍 Strong Match"
-                )
-
-            elif score >= 50:
-
-                st.warning(
-                    "👌 Good Match"
-                )
-
-            else:
-
-                st.error(
-                    "🔎 Low Match"
-                )
-
-        st.divider()
-
-        # ----------------------------------------------------
-        # Course Information
-        # ----------------------------------------------------
-
-        info_col1, info_col2, info_col3, info_col4 = st.columns(4)
-
-        with info_col1:
-
-            st.write(
-                "🎓 **Education**"
+            st.metric(
+                "Career",
+                f"{row['Career_Match']:.0f}%"
             )
 
-            st.write(
-                get_original_value(
-                    row,
-                    education_col
-                )
+        with b3:
+
+            st.metric(
+                "Skills",
+                f"{row['Skill_Match']:.0f}%"
             )
 
-        with info_col2:
+        b4, b5 = st.columns(2)
 
-            st.write(
-                "⏱️ **Duration**"
+        with b4:
+
+            st.metric(
+                "Education",
+                f"{row['Education_Match']:.0f}%"
             )
 
-            st.write(
-                get_original_value(
-                    row,
-                    duration_col
-                )
+        with b5:
+
+            st.metric(
+                "Skill Level",
+                f"{row['Level_Match']:.0f}%"
             )
 
-        with info_col3:
-
-            st.write(
-                "⭐ **Rating**"
-            )
-
-            st.write(
-                get_original_value(
-                    row,
-                    rating_col
-                )
-            )
-
-        with info_col4:
-
-            st.write(
-                "💰 **Salary Range**"
-            )
-
-            st.write(
-                get_original_value(
-                    row,
-                    salary_col
-                )
-            )
-
-        st.divider()
-
-        # ----------------------------------------------------
-        # More Information
-        # ----------------------------------------------------
-
-        more_col1, more_col2 = st.columns(2)
-
-        with more_col1:
-
-            st.write(
-                "⚡ **Difficulty / Skill Level**"
-            )
-
-            st.write(
-                get_original_value(
-                    row,
-                    skill_level_col
-                )
-            )
-
-        with more_col2:
-
-            st.write(
-                "💼 **Career Role**"
-            )
-
-            st.write(
-                get_original_value(
-                    row,
-                    career_col
-                )
-            )
-
-        # ----------------------------------------------------
-        # Skills
-        # ----------------------------------------------------
-
-        st.write(
-            "🛠️ **Course Skills**"
-        )
-
-        st.info(
-            get_original_value(
-                row,
-                skills_col
-            )
-        )
-
-        # ----------------------------------------------------
-        # AI Score Breakdown
-        # ----------------------------------------------------
-
-        with st.expander(
-            "🧠 View AI Match Breakdown"
-        ):
-
-            breakdown_col1, breakdown_col2 = st.columns(2)
-
-            with breakdown_col1:
-
-                st.write(
-                    f"💡 Interest Match: "
-                    f"**{row['Interest_Score']:.1f}%**"
-                )
-
-                st.write(
-                    f"🎯 Career Match: "
-                    f"**{row['Career_Score']:.1f}%**"
-                )
-
-                st.write(
-                    f"🛠️ Skills Match: "
-                    f"**{row['Skill_Score']:.1f}%**"
-                )
-
-            with breakdown_col2:
-
-                st.write(
-                    f"🎓 Education Match: "
-                    f"**{row['Education_Score']:.1f}%**"
-                )
-
-                st.write(
-                    f"📊 Level Match: "
-                    f"**{row['Level_Score']:.1f}%**"
-                )
-
-                st.write(
-                    f"🧠 NLP Similarity: "
-                    f"**{row['NLP_Score']:.1f}%**"
-                )
-
-        st.write("")
+    st.divider()
 
 
 # ============================================================
-# RECOMMENDATION SUMMARY
+# RECOMMENDATION TABLE
 # ============================================================
-
-st.divider()
 
 st.subheader(
     "📊 Recommendation Summary"
 )
 
+table_data = []
 
-summary_rows = []
+for i in range(top_n):
 
+    row = recommendations.iloc[i]
 
-for index in range(top_n):
-
-    row = recommendations.iloc[index]
-
-    summary_rows.append({
+    table_data.append({
 
         "Rank":
-            index + 1,
+            i + 1,
 
         "Course":
-            get_original_value(
+            get_value(
                 row,
                 course_col
             ),
 
         "AI Match":
-            f"{row['AI_Score']:.0f}%",
+            f"{float(row['AI_Score']):.0f}%",
 
         "Career Role":
-            get_original_value(
+            get_value(
                 row,
                 career_col
-            ),
+            ) or "Not specified",
 
         "Education":
-            get_original_value(
+            get_value(
                 row,
                 education_col
-            ),
+            ) or "Not specified",
 
         "Duration":
-            get_original_value(
+            get_value(
                 row,
                 duration_col
-            ),
+            ) or "Not specified",
 
         "Rating":
-            get_original_value(
+            get_value(
                 row,
                 rating_col
-            )
+            ) or "Not specified",
 
+        "Salary":
+            get_value(
+                row,
+                salary_col
+            ) or "Not specified"
     })
 
 
-summary_df = pd.DataFrame(
-    summary_rows
+summary = pd.DataFrame(
+    table_data
 )
 
-
 st.dataframe(
-    summary_df,
+    summary,
     use_container_width=True,
     hide_index=True
 )
 
 
 # ============================================================
-# AI MATCH VISUALIZATION
+# SIMPLE SCORE DISPLAY
 # ============================================================
 
-st.divider()
-
 st.subheader(
-    "📈 AI Match Comparison"
+    "📈 AI Match Scores"
 )
 
+score_df = pd.DataFrame({
 
-chart_data = recommendations[
-    [
-        course_col,
-        "AI_Score"
-    ]
-].head(top_n).copy()
+    "Course":
+        [
+            get_value(
+                recommendations.iloc[i],
+                course_col
+            )
+            for i in range(top_n)
+        ],
 
-
-chart_data = chart_data.rename(
-    columns={
-        course_col: "Course",
-        "AI_Score": "AI Match Score"
-    }
-)
-
-
-chart_data = chart_data.set_index(
-    "Course"
-)
+    "AI Match Score":
+        [
+            round(
+                float(
+                    recommendations.iloc[i]["AI_Score"]
+                ),
+                1
+            )
+            for i in range(top_n)
+        ]
+})
 
 
 st.bar_chart(
-    chart_data,
-    y="AI Match Score"
+    score_df.set_index(
+        "Course"
+    )
 )
-
-
-# ============================================================
-# DATASET INFORMATION
-# ============================================================
-
-st.divider()
-
-st.subheader(
-    "📚 Dataset Information"
-)
-
-data_col1, data_col2, data_col3 = st.columns(3)
-
-with data_col1:
-
-    st.metric(
-        "Total Courses",
-        len(df)
-    )
-
-with data_col2:
-
-    st.metric(
-        "Dataset Columns",
-        len(df.columns)
-    )
-
-with data_col3:
-
-    st.metric(
-        "Top Match",
-        f"{top_score:.0f}%"
-    )
-
-
-# ============================================================
-# DETECTED DATASET COLUMNS
-# ============================================================
-
-with st.expander(
-    "🔍 View Detected Dataset Columns"
-):
-
-    column_info = {
-
-        "Course":
-            course_col,
-
-        "Interest":
-            interest_col,
-
-        "Career Goal":
-            career_col,
-
-        "Skills":
-            skills_col,
-
-        "Education":
-            education_col,
-
-        "Skill Level":
-            skill_level_col,
-
-        "Duration":
-            duration_col,
-
-        "Rating":
-            rating_col,
-
-        "Salary":
-            salary_col
-
-    }
-
-    detected_df = pd.DataFrame(
-        list(
-            column_info.items()
-        ),
-        columns=[
-            "Field",
-            "Dataset Column"
-        ]
-    )
-
-    st.dataframe(
-        detected_df,
-        use_container_width=True,
-        hide_index=True
-    )
 
 
 # ============================================================
@@ -2050,11 +1535,6 @@ with st.expander(
 st.divider()
 
 st.caption(
-    "🎓 Course Recommendation System"
-)
-
-st.caption(
-    "🤖 AI Recommendation Engine • "
-    "Weighted Profile Matching • "
-    "TF-IDF NLP Similarity"
+    "Course Recommendation System | "
+    "Weighted Intelligent Matching + NLP Similarity"
 )
