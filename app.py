@@ -13,7 +13,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ============================================================
 
 st.set_page_config(
-    page_title="AI Course Recommendation System",
+    page_title="AI Course Finder",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -21,248 +21,407 @@ st.set_page_config(
 
 
 # ============================================================
-# CUSTOM CSS - PROFESSIONAL UI
+# PREMIUM CSS
 # ============================================================
 
 st.markdown("""
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-html, body, [class*="css"] {
+* {
     font-family: 'Inter', sans-serif;
 }
 
 .stApp {
-    background: linear-gradient(135deg, #f8faff 0%, #eef3ff 50%, #f8faff 100%);
+    background:
+        radial-gradient(circle at 10% 10%, rgba(99,102,241,.10), transparent 25%),
+        radial-gradient(circle at 90% 20%, rgba(14,165,233,.10), transparent 25%),
+        linear-gradient(135deg,#f8fafc,#eef2ff,#f8fafc);
 }
 
-/* Main container */
 .block-container {
+    max-width: 1450px;
     padding-top: 2rem;
-    padding-bottom: 2rem;
-    max-width: 1400px;
+    padding-bottom: 3rem;
 }
 
-/* Sidebar */
+/* ---------------- SIDEBAR ---------------- */
+
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #111827 0%, #1e293b 100%);
+    background: linear-gradient(180deg,#0f172a,#172554 55%,#111827);
+    border-right: 1px solid rgba(255,255,255,.08);
 }
 
 section[data-testid="stSidebar"] * {
     color: white !important;
 }
 
-section[data-testid="stSidebar"] input {
-    background-color: rgba(255,255,255,0.10) !important;
-    border: 1px solid rgba(255,255,255,0.20) !important;
-    border-radius: 10px !important;
+.sidebar-logo {
+    text-align:center;
+    padding:12px 5px 22px;
 }
 
-section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    background-color: rgba(255,255,255,0.10) !important;
-    border-radius: 10px !important;
+.sidebar-logo .icon {
+    font-size:52px;
 }
 
-/* Hero */
+.sidebar-logo h2 {
+    margin:5px 0 2px;
+    font-size:23px;
+    font-weight:800;
+}
+
+.sidebar-logo p {
+    color:#94a3b8 !important;
+    font-size:12px;
+}
+
+.sidebar-title {
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.5px;
+    margin-bottom:10px;
+}
+
+div[data-baseweb="input"] > div,
+div[data-baseweb="select"] > div {
+    background:rgba(255,255,255,.08) !important;
+    border:1px solid rgba(255,255,255,.15) !important;
+    border-radius:12px !important;
+}
+
+.stButton > button {
+    border-radius:13px !important;
+    min-height:48px !important;
+    font-weight:800 !important;
+    border:0 !important;
+}
+
+/* ---------------- HERO ---------------- */
+
 .hero {
-    padding: 38px 42px;
-    border-radius: 24px;
-    background: linear-gradient(
-        135deg,
-        #111827 0%,
-        #1d4ed8 55%,
-        #2563eb 100%
-    );
-    color: white;
-    margin-bottom: 25px;
-    box-shadow: 0 15px 40px rgba(37, 99, 235, 0.20);
+    position:relative;
+    overflow:hidden;
+    border-radius:28px;
+    padding:42px 45px;
+    background:
+        radial-gradient(circle at 85% 15%,rgba(255,255,255,.20),transparent 25%),
+        linear-gradient(135deg,#0f172a,#1e3a8a 55%,#2563eb);
+    color:white;
+    box-shadow:0 20px 55px rgba(30,64,175,.22);
+    margin-bottom:22px;
+}
+
+.hero:after {
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    right:-70px;
+    bottom:-100px;
+    background:rgba(255,255,255,.08);
+}
+
+.hero-badge {
+    display:inline-block;
+    padding:7px 14px;
+    border-radius:30px;
+    background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.18);
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.7px;
 }
 
 .hero h1 {
-    font-size: 42px;
-    font-weight: 800;
-    margin-bottom: 8px;
+    font-size:42px;
+    line-height:1.1;
+    font-weight:900;
+    margin:14px 0 10px;
 }
 
 .hero p {
-    font-size: 17px;
-    opacity: 0.90;
-    margin-bottom: 0;
+    margin:0;
+    color:#dbeafe;
+    font-size:16px;
+    max-width:750px;
 }
 
-/* AI Badge */
-.ai-badge {
-    display: inline-block;
-    padding: 7px 15px;
-    border-radius: 30px;
-    background: rgba(255,255,255,0.16);
-    border: 1px solid rgba(255,255,255,0.25);
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 15px;
+/* ---------------- SECTION ---------------- */
+
+.section-heading {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:25px;
+    font-weight:900;
+    color:#0f172a;
+    margin:30px 0 15px;
 }
 
-/* Metric cards */
-.metric-card {
-    background: white;
-    padding: 22px;
-    border-radius: 18px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 7px 25px rgba(15, 23, 42, 0.06);
-    text-align: center;
+.section-subtitle {
+    color:#64748b;
+    font-size:13px;
+    margin-top:-8px;
+    margin-bottom:18px;
 }
 
-.metric-title {
-    color: #64748b;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
+/* ---------------- PROFILE ---------------- */
+
+.profile-box {
+    background:rgba(255,255,255,.82);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(148,163,184,.20);
+    border-radius:22px;
+    padding:20px;
+    box-shadow:0 10px 35px rgba(15,23,42,.06);
 }
 
-.metric-value {
-    color: #111827;
-    font-size: 28px;
-    font-weight: 800;
-    margin-top: 5px;
+.profile-card {
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:17px;
+    min-height:95px;
+    box-shadow:0 5px 18px rgba(15,23,42,.04);
 }
 
-/* Recommendation card */
-.course-card {
-    background: white;
-    border-radius: 20px;
-    padding: 24px;
-    margin: 15px 0;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
-    transition: 0.2s ease;
+.profile-icon {
+    font-size:20px;
 }
 
-.course-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
+.profile-label {
+    color:#64748b;
+    font-size:10px;
+    text-transform:uppercase;
+    font-weight:800;
+    letter-spacing:.5px;
+    margin-top:7px;
 }
 
-.rank {
-    display: inline-block;
-    background: #eff6ff;
-    color: #2563eb;
-    border-radius: 20px;
-    padding: 6px 13px;
-    font-size: 12px;
-    font-weight: 700;
+.profile-value {
+    color:#0f172a;
+    font-size:14px;
+    font-weight:700;
+    margin-top:3px;
+    word-break:break-word;
 }
 
-.course-title {
-    color: #111827;
-    font-size: 23px;
-    font-weight: 800;
-    margin: 10px 0 8px;
+/* ---------------- AI ANALYSIS ---------------- */
+
+.ai-analysis {
+    border-radius:22px;
+    padding:24px;
+    background:linear-gradient(135deg,#eef2ff,#eff6ff);
+    border:1px solid #c7d2fe;
+    box-shadow:0 8px 30px rgba(79,70,229,.07);
 }
 
-.course-description {
-    color: #64748b;
-    font-size: 14px;
+.ai-analysis-title {
+    color:#3730a3;
+    font-weight:900;
+    font-size:17px;
 }
 
-/* Match score */
-.score-box {
-    text-align: center;
-    background: #eff6ff;
-    border-radius: 16px;
-    padding: 15px 10px;
+.ai-analysis-text {
+    color:#475569;
+    font-size:13px;
+    margin-top:6px;
+}
+
+/* ---------------- BEST MATCH ---------------- */
+
+.best-card {
+    background:linear-gradient(135deg,#ffffff,#eff6ff);
+    border:2px solid #60a5fa;
+    border-radius:26px;
+    padding:27px;
+    box-shadow:0 15px 45px rgba(37,99,235,.12);
+}
+
+.best-badge {
+    display:inline-block;
+    padding:6px 12px;
+    background:#dbeafe;
+    color:#1d4ed8;
+    border-radius:30px;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.5px;
+}
+
+.best-title {
+    font-size:28px;
+    font-weight:900;
+    color:#0f172a;
+    margin:12px 0 7px;
+}
+
+.best-description {
+    color:#64748b;
+    font-size:13px;
+    line-height:1.6;
+}
+
+/* ---------------- SCORE ---------------- */
+
+.score-circle {
+    text-align:center;
+    padding:17px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
 }
 
 .score-number {
-    color: #2563eb;
-    font-size: 29px;
-    font-weight: 800;
+    color:#2563eb;
+    font-size:36px;
+    font-weight:900;
 }
 
-.score-label {
-    color: #64748b;
-    font-size: 11px;
-    font-weight: 700;
+.score-text {
+    color:#64748b;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.5px;
 }
 
-/* Info pills */
-.info-pill {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px;
-    height: 100%;
+/* ---------------- INFO CARDS ---------------- */
+
+.info-card {
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:15px;
+    padding:14px;
+    min-height:72px;
 }
 
 .info-label {
-    color: #64748b;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
+    color:#94a3b8;
+    font-size:9px;
+    font-weight:900;
+    text-transform:uppercase;
 }
 
 .info-value {
-    color: #111827;
-    font-size: 14px;
-    font-weight: 600;
-    margin-top: 4px;
+    color:#0f172a;
+    font-size:13px;
+    font-weight:700;
+    margin-top:5px;
 }
 
-/* Best match */
-.best-match {
-    background: linear-gradient(
-        135deg,
-        #ffffff 0%,
-        #eff6ff 100%
-    );
-    border: 2px solid #3b82f6;
-    border-radius: 22px;
-    padding: 28px;
-    margin: 20px 0;
-    box-shadow: 0 10px 35px rgba(37,99,235,0.12);
+/* ---------------- COURSE CARD ---------------- */
+
+.course-card {
+    background:rgba(255,255,255,.95);
+    border:1px solid #e2e8f0;
+    border-radius:22px;
+    padding:22px;
+    margin:13px 0;
+    box-shadow:0 8px 28px rgba(15,23,42,.055);
+    transition:.2s;
 }
 
-.best-label {
-    color: #2563eb;
-    font-size: 13px;
-    font-weight: 800;
-    text-transform: uppercase;
+.course-card:hover {
+    transform:translateY(-3px);
+    box-shadow:0 15px 38px rgba(15,23,42,.10);
 }
 
-/* Section heading */
-.section-title {
-    color: #111827;
-    font-size: 25px;
-    font-weight: 800;
-    margin-top: 25px;
+.rank-badge {
+    display:inline-block;
+    background:#f1f5f9;
+    color:#475569;
+    padding:5px 11px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:900;
 }
 
-/* Button */
-.stButton > button {
-    border-radius: 12px !important;
-    font-weight: 700 !important;
-    min-height: 48px !important;
+.course-name {
+    color:#0f172a;
+    font-size:20px;
+    font-weight:900;
+    margin:8px 0 5px;
 }
 
-/* Footer */
+.course-reason {
+    color:#64748b;
+    font-size:12px;
+    line-height:1.5;
+}
+
+/* ---------------- MATCH ---------------- */
+
+.match-box {
+    text-align:center;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:17px;
+    padding:12px;
+}
+
+.match-number {
+    color:#2563eb;
+    font-size:25px;
+    font-weight:900;
+}
+
+.match-label {
+    color:#64748b;
+    font-size:9px;
+    font-weight:900;
+}
+
+/* ---------------- STAT ---------------- */
+
+.stat {
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 5px 20px rgba(15,23,42,.04);
+}
+
+.stat-icon {
+    font-size:24px;
+}
+
+.stat-value {
+    font-size:25px;
+    font-weight:900;
+    color:#0f172a;
+    margin-top:4px;
+}
+
+.stat-label {
+    color:#64748b;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+/* ---------------- FOOTER ---------------- */
+
 .footer {
-    text-align: center;
-    padding: 25px;
-    color: #64748b;
-    font-size: 13px;
+    text-align:center;
+    padding:35px 10px 10px;
+    color:#64748b;
+    font-size:12px;
 }
 
-/* Hide Streamlit branding */
 #MainMenu {
-    visibility: hidden;
+    visibility:hidden;
 }
 
 footer {
-    visibility: hidden;
+    visibility:hidden;
 }
 
 header {
-    visibility: hidden;
+    visibility:hidden;
 }
 
 </style>
@@ -270,10 +429,8 @@ header {
 
 
 # ============================================================
-# CONFIGURATION
+# DATASET
 # ============================================================
-
-TOP_N = 5
 
 DATASET_FILES = [
     "course_recommendation_dataset_1000.csv",
@@ -282,94 +439,63 @@ DATASET_FILES = [
 ]
 
 
-# ============================================================
-# FIND DATASET
-# ============================================================
+def find_dataset():
 
-def find_dataset_file():
+    for file in DATASET_FILES:
+        if os.path.exists(file):
+            return file
 
-    for file_name in DATASET_FILES:
-
-        if os.path.exists(file_name):
-            return file_name
-
-    try:
-
-        for file_name in os.listdir("."):
-
-            if file_name.lower().endswith(".csv"):
-                return file_name
-
-    except Exception:
-        pass
+    for file in os.listdir("."):
+        if file.endswith(".csv"):
+            return file
 
     return None
 
 
-# ============================================================
-# LOAD DATA
-# ============================================================
-
 @st.cache_data
 def load_data():
 
-    dataset_file = find_dataset_file()
+    file = find_dataset()
 
-    if dataset_file is None:
+    if file is None:
         return None, None
 
-    try:
+    data = pd.read_csv(file)
 
-        data = pd.read_csv(dataset_file)
+    data.columns = [
+        str(c).strip().lower()
+        .replace(" ", "_")
+        .replace("-", "_")
+        for c in data.columns
+    ]
 
-        data.columns = [
-            str(col)
-            .strip()
-            .lower()
-            .replace(" ", "_")
-            .replace("-", "_")
-            for col in data.columns
-        ]
+    data = data.replace(
+        [np.inf, -np.inf],
+        np.nan
+    ).fillna("")
 
-        data = data.replace(
-            [np.inf, -np.inf],
-            np.nan
-        )
-
-        data = data.fillna("")
-
-        return data, dataset_file
-
-    except Exception:
-
-        return None, dataset_file
+    return data, file
 
 
-df, loaded_dataset_file = load_data()
+df, dataset_file = load_data()
 
-
-# ============================================================
-# DATASET ERROR
-# ============================================================
 
 if df is None:
-
-    st.error("❌ Dataset could not be loaded.")
-
+    st.error("❌ CSV dataset not found.")
     st.info(
-        "Keep your CSV file in the same folder as app.py."
+        "Keep course_recommendation_dataset_1000.csv "
+        "in the same folder as app.py."
     )
-
     st.stop()
 
 
 # ============================================================
-# COLUMN FINDER
+# COLUMN DETECTION
 # ============================================================
 
-def find_column(possible_names):
+def get_col(names):
 
-    for name in possible_names:
+    for name in names:
 
         name = (
             name.lower()
@@ -384,107 +510,89 @@ def find_column(possible_names):
     return None
 
 
-# ============================================================
-# DETECT COLUMNS
-# ============================================================
-
-COURSE_COL = find_column([
-    "course",
+COURSE_COL = get_col([
     "course_name",
+    "course",
     "course_title",
     "title",
-    "program",
-    "program_name"
+    "program"
 ])
 
-INTEREST_COL = find_column([
+INTEREST_COL = get_col([
     "interest",
     "interests",
-    "domain",
     "category",
-    "field",
-    "area"
+    "domain",
+    "field"
 ])
 
-CAREER_COL = find_column([
+CAREER_COL = get_col([
     "career_goal",
     "career",
     "career_path",
     "job_role",
-    "role",
-    "recommended_role"
+    "role"
 ])
 
-SKILLS_COL = find_column([
+SKILLS_COL = get_col([
     "skills",
     "skill",
     "required_skills",
-    "technical_skills",
-    "course_skills"
+    "technical_skills"
 ])
 
-EDUCATION_COL = find_column([
+EDUCATION_COL = get_col([
     "education",
     "qualification",
     "eligibility",
-    "education_level",
-    "educational_qualification"
+    "education_level"
 ])
 
-LEVEL_COL = find_column([
+LEVEL_COL = get_col([
     "skill_level",
     "level",
     "difficulty",
-    "difficulty_level",
-    "experience_level"
+    "difficulty_level"
 ])
 
-DURATION_COL = find_column([
+DURATION_COL = get_col([
     "duration",
-    "course_duration",
     "duration_months",
+    "course_duration",
     "course_length"
 ])
 
-RATING_COL = find_column([
+RATING_COL = get_col([
     "rating",
     "course_rating",
     "ratings"
 ])
 
-SALARY_COL = find_column([
-    "salary",
+SALARY_COL = get_col([
     "salary_range",
+    "salary",
     "expected_salary",
     "salary_package",
     "package"
 ])
 
 
-# ============================================================
-# COURSE COLUMN CHECK
-# ============================================================
-
 if COURSE_COL is None:
-
     st.error("❌ Course Name column not found.")
-
-    st.write("Available columns:")
     st.write(list(df.columns))
-
     st.stop()
 
 
 # ============================================================
-# NORMALIZE TEXT
+# HELPERS
 # ============================================================
 
-def normalize(text):
+def clean_text(value):
 
-    if text is None:
+    if value is None:
         return ""
 
-    text = str(text).lower().strip()
+    text = str(value).lower()
 
     text = text.replace("&", " and ")
     text = text.replace("/", " ")
@@ -496,63 +604,52 @@ def normalize(text):
         text
     )
 
-    text = re.sub(
+    return re.sub(
         r"\s+",
         " ",
         text
-    )
-
-    return text.strip()
+    ).strip()
 
 
-# ============================================================
-# ROW VALUE
-# ============================================================
+def value(row, col):
 
-def row_value(row, column):
-
-    if column is None:
+    if col is None:
         return ""
 
-    if column not in row.index:
+    if col not in row.index:
         return ""
 
-    value = row[column]
+    x = row[col]
 
-    if pd.isna(value):
+    if pd.isna(x):
         return ""
 
-    return str(value).strip()
+    return str(x).strip()
 
 
 # ============================================================
-# AI RELATED TERMS
+# RELATED AI TERMS
 # ============================================================
 
-RELATED_TERMS = {
+RELATED = {
 
     "ai": [
         "artificial intelligence",
         "machine learning",
         "deep learning",
+        "data science",
         "neural network",
         "computer vision",
-        "natural language processing",
-        "nlp",
-        "generative ai",
-        "data science"
+        "nlp"
     ],
 
     "artificial intelligence": [
         "ai",
         "machine learning",
         "deep learning",
-        "neural network",
+        "data science",
         "computer vision",
-        "natural language processing",
-        "nlp",
-        "generative ai",
-        "data science"
+        "natural language processing"
     ],
 
     "machine learning": [
@@ -560,7 +657,6 @@ RELATED_TERMS = {
         "artificial intelligence",
         "ai",
         "deep learning",
-        "neural network",
         "data science",
         "predictive analytics"
     ],
@@ -569,22 +665,17 @@ RELATED_TERMS = {
         "data science",
         "machine learning",
         "artificial intelligence",
-        "ai",
-        "data analytics",
-        "statistics",
         "python",
-        "pandas",
-        "sql"
+        "statistics",
+        "data analytics"
     ],
 
-    "data analytics": [
-        "data analytics",
-        "data analysis",
-        "data science",
-        "sql",
+    "python": [
         "python",
-        "statistics",
-        "business intelligence"
+        "machine learning",
+        "data science",
+        "artificial intelligence",
+        "automation"
     ],
 
     "cloud": [
@@ -592,12 +683,10 @@ RELATED_TERMS = {
         "aws",
         "azure",
         "google cloud",
-        "cloud engineer",
         "devops"
     ],
 
     "cyber security": [
-        "cyber security",
         "cybersecurity",
         "ethical hacking",
         "network security",
@@ -605,7 +694,6 @@ RELATED_TERMS = {
     ],
 
     "web development": [
-        "web development",
         "frontend",
         "backend",
         "full stack",
@@ -613,423 +701,238 @@ RELATED_TERMS = {
         "react",
         "html",
         "css"
-    ],
-
-    "python": [
-        "python",
-        "data science",
-        "machine learning",
-        "artificial intelligence",
-        "automation",
-        "pandas",
-        "numpy"
-    ],
-
-    "sql": [
-        "sql",
-        "database",
-        "data analytics",
-        "data science",
-        "business intelligence"
     ]
 }
 
 
-# ============================================================
-# EXPAND TERMS
-# ============================================================
+def expand(text):
 
-def expand_terms(text):
+    text = clean_text(text)
 
-    text = normalize(text)
+    result = [text]
 
-    expanded = [text]
-
-    for key, values in RELATED_TERMS.items():
+    for key, terms in RELATED.items():
 
         if key in text:
+            result.extend(terms)
 
-            expanded.extend(values)
-
-    return " ".join(expanded)
+    return " ".join(result)
 
 
 # ============================================================
-# PREPARE UNIQUE COURSES
+# UNIQUE DATA
 # ============================================================
 
 @st.cache_data
-def prepare_unique_courses():
+def unique_courses():
 
     data = df.copy()
 
-    data["_course_key"] = (
+    data["_key"] = (
         data[COURSE_COL]
         .astype(str)
-        .apply(normalize)
+        .apply(clean_text)
     )
 
-    data = data[
-        data["_course_key"] != ""
-    ]
+    data = data[data["_key"] != ""]
 
     data = data.drop_duplicates(
-        subset=["_course_key"],
-        keep="first"
+        "_key"
     )
 
     return data.reset_index(drop=True)
 
 
 # ============================================================
-# COURSE PROFILE
+# AI RECOMMENDER
 # ============================================================
 
-def create_course_profile(row):
-
-    values = [
-
-        row_value(row, COURSE_COL),
-        row_value(row, INTEREST_COL),
-        row_value(row, CAREER_COL),
-        row_value(row, SKILLS_COL),
-        row_value(row, EDUCATION_COL),
-        row_value(row, LEVEL_COL)
-
-    ]
-
-    return " ".join(
-        expand_terms(value)
-        for value in values
-        if value
-    )
-
-
-# ============================================================
-# MATCH FUNCTIONS
-# ============================================================
-
-def keyword_match(user_text, course_text):
-
-    user_text = expand_terms(user_text)
-    course_text = expand_terms(course_text)
-
-    if not user_text or not course_text:
-        return 0.0
-
-    user_words = set(user_text.split())
-    course_words = set(course_text.split())
-
-    if not user_words:
-        return 0.0
-
-    common = user_words.intersection(course_words)
-
-    return min(
-        len(common) / len(user_words),
-        1.0
-    )
-
-
-def skill_match(user_skills, course_skills):
-
-    user_skills = normalize(user_skills)
-    course_skills = normalize(course_skills)
-
-    if not user_skills or not course_skills:
-        return 0.0
-
-    user_list = re.split(
-        r",|;|\|",
-        user_skills
-    )
-
-    user_list = [
-        normalize(x)
-        for x in user_list
-        if normalize(x)
-    ]
-
-    if not user_list:
-        return 0.0
-
-    matched = 0
-
-    for skill in user_list:
-
-        if skill in course_skills:
-            matched += 1
-
-    return min(
-        matched / len(user_list),
-        1.0
-    )
-
-
-def exact_match(user_value, course_value):
-
-    user = normalize(user_value)
-    course = normalize(course_value)
-
-    if not user or not course:
-        return 0.0
-
-    if user == course:
-        return 1.0
-
-    if user in course or course in user:
-        return 1.0
-
-    return 0.0
-
-
-# ============================================================
-# 🤖 AI RECOMMENDATION ENGINE
-# ============================================================
-
-def recommend_courses(
+def recommend(
     interest,
-    career_goal,
+    career,
     education,
     skills,
-    skill_level
+    level
 ):
 
-    data = prepare_unique_courses()
+    data = unique_courses()
 
-    if data.empty:
-        return data
+    profiles = []
 
-    # --------------------------------------------------------
-    # Create AI Course Profiles
-    # --------------------------------------------------------
+    for _, row in data.iterrows():
 
-    course_profiles = [
-        create_course_profile(row)
-        for _, row in data.iterrows()
-    ]
+        profile = " ".join([
+            expand(value(row, COURSE_COL)),
+            expand(value(row, INTEREST_COL)),
+            expand(value(row, CAREER_COL)),
+            expand(value(row, SKILLS_COL)),
+            expand(value(row, EDUCATION_COL)),
+            expand(value(row, LEVEL_COL))
+        ])
 
-    # --------------------------------------------------------
-    # Create User Profile
-    # --------------------------------------------------------
+        profiles.append(profile)
 
     user_profile = " ".join([
-        expand_terms(interest),
-        expand_terms(career_goal),
-        expand_terms(skills),
-        normalize(education),
-        normalize(skill_level)
+        expand(interest),
+        expand(career),
+        expand(skills),
+        expand(education),
+        expand(level)
     ])
 
-    documents = [
-        user_profile
-    ] + course_profiles
+    documents = [user_profile] + profiles
 
-    # --------------------------------------------------------
-    # TF-IDF AI MODEL
-    # --------------------------------------------------------
+    vectorizer = TfidfVectorizer(
+        stop_words="english",
+        ngram_range=(1, 2),
+        max_features=12000,
+        sublinear_tf=True
+    )
 
-    try:
+    matrix = vectorizer.fit_transform(
+        documents
+    )
 
-        vectorizer = TfidfVectorizer(
-            stop_words="english",
-            ngram_range=(1, 2),
-            max_features=10000,
-            sublinear_tf=True
-        )
+    semantic = cosine_similarity(
+        matrix[0:1],
+        matrix[1:]
+    )[0]
 
-        matrix = vectorizer.fit_transform(
-            documents
-        )
+    final_scores = []
+    reasons = []
 
-        semantic_scores = cosine_similarity(
-            matrix[0:1],
-            matrix[1:]
-        )[0]
-
-    except Exception:
-
-        semantic_scores = np.zeros(
-            len(data)
-        )
-
-    # --------------------------------------------------------
-    # HYBRID AI SCORING
-    # --------------------------------------------------------
-
-    scores = []
-
-    explanations = []
-
-    for index, (_, row) in enumerate(
+    for i, (_, row) in enumerate(
         data.iterrows()
     ):
 
-        course_name = row_value(
-            row,
-            COURSE_COL
+        course_text = profiles[i]
+
+        interest_score = (
+            1 if any(
+                word in course_text
+                for word in expand(interest).split()
+                if len(word) > 2
+            )
+            else 0
         )
 
-        course_interest = row_value(
-            row,
-            INTEREST_COL
+        career_score = (
+            1 if any(
+                word in course_text
+                for word in expand(career).split()
+                if len(word) > 2
+            )
+            else 0
         )
 
-        course_career = row_value(
-            row,
-            CAREER_COL
+        skill_words = [
+            clean_text(x)
+            for x in re.split(
+                r",|;|\|",
+                skills
+            )
+            if clean_text(x)
+        ]
+
+        skill_matches = sum(
+            1
+            for skill in skill_words
+            if skill and skill in course_text
         )
 
-        course_skills = row_value(
-            row,
-            SKILLS_COL
+        skill_score = (
+            skill_matches / len(skill_words)
+            if skill_words
+            else 0
         )
 
-        course_education = row_value(
-            row,
-            EDUCATION_COL
+        education_score = (
+            1
+            if clean_text(education)
+            and clean_text(education)
+            in course_text
+            else 0
         )
 
-        course_level = row_value(
-            row,
-            LEVEL_COL
+        level_score = (
+            1
+            if clean_text(level)
+            and clean_text(level)
+            in course_text
+            else 0
         )
 
-        # ----------------------------------------------------
-        # Individual AI Features
-        # ----------------------------------------------------
-
-        interest_score = keyword_match(
-            interest,
-            course_name + " " + course_interest
-        )
-
-        career_score = keyword_match(
-            career_goal,
-            course_name + " " + course_career
-        )
-
-        skills_score = skill_match(
-            skills,
-            course_skills
-        )
-
-        education_score = exact_match(
-            education,
-            course_education
-        )
-
-        level_score = exact_match(
-            skill_level,
-            course_level
-        )
-
-        semantic_score = float(
-            semantic_scores[index]
-        )
-
-        # ----------------------------------------------------
-        # Final Hybrid AI Score
-        #
-        # Semantic AI       = 35%
-        # Interest           = 20%
-        # Career             = 20%
-        # Skills             = 15%
-        # Education          = 5%
-        # Level              = 5%
-        # ----------------------------------------------------
-
-        final_score = (
-            semantic_score * 35
+        score = (
+            float(semantic[i]) * 35
             + interest_score * 20
             + career_score * 20
-            + skills_score * 15
+            + skill_score * 15
             + education_score * 5
             + level_score * 5
         )
 
-        final_score = min(
-            max(final_score, 0),
+        score = min(
+            max(score, 0),
             100
         )
 
-        scores.append(
-            round(final_score, 2)
+        final_scores.append(
+            round(score, 1)
         )
 
-        # ----------------------------------------------------
-        # Explainable AI
-        # ----------------------------------------------------
+        why = []
 
-        reasons = []
+        if interest_score:
+            why.append("interest")
 
-        if interest_score >= 0.25:
-            reasons.append("your interest")
+        if career_score:
+            why.append("career goal")
 
-        if career_score >= 0.25:
-            reasons.append("your career goal")
+        if skill_score > 0:
+            why.append("skills")
 
-        if skills_score >= 0.25:
-            reasons.append("your skills")
+        if education_score:
+            why.append("education")
 
-        if education_score > 0:
-            reasons.append("your education")
+        if level_score:
+            why.append("skill level")
 
-        if level_score > 0:
-            reasons.append("your skill level")
+        if semantic[i] >= .20:
+            why.append("AI semantic similarity")
 
-        if semantic_score >= 0.20:
-            reasons.append("AI semantic similarity")
-
-        if reasons:
-
-            explanation = (
-                "Recommended because it matches "
-                + ", ".join(reasons)
+        if why:
+            reason = (
+                "Strong match with your "
+                + ", ".join(why)
                 + "."
             )
-
         else:
-
-            explanation = (
+            reason = (
                 "Recommended based on overall "
                 "AI profile similarity."
             )
 
-        explanations.append(
-            explanation
-        )
+        reasons.append(reason)
 
-    data["AI_Score"] = scores
-    data["AI_Explanation"] = explanations
-
-    # --------------------------------------------------------
-    # Sort
-    # --------------------------------------------------------
+    data["AI_Score"] = final_scores
+    data["AI_Reason"] = reasons
 
     data = data.sort_values(
-        by="AI_Score",
+        "AI_Score",
         ascending=False
     )
 
-    # --------------------------------------------------------
-    # Ensure unique course names
-    # --------------------------------------------------------
-
-    data["_course_unique"] = (
-        data[COURSE_COL]
-        .astype(str)
-        .apply(normalize)
-    )
-
     data = data.drop_duplicates(
-        subset="_course_unique",
-        keep="first"
+        subset=[
+            data[COURSE_COL]
+            .astype(str)
+            .apply(clean_text)
+            .name
+        ]
+        if False else COURSE_COL
     )
 
-    return data.reset_index(
-        drop=True
-    )
+    return data.reset_index(drop=True)
 
 
 # ============================================================
@@ -1038,49 +941,42 @@ def recommend_courses(
 
 with st.sidebar:
 
-    st.markdown(
-        """
-        <div style="
-        text-align:center;
-        padding:10px 0 20px 0;
-        ">
-        <div style="font-size:48px;">🎓</div>
-        <h2 style="margin:0;">AI Course Finder</h2>
-        <p style="font-size:13px;opacity:.7;">
-        Smart • Personalized • AI Powered
-        </p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+    <div class="sidebar-logo">
+        <div class="icon">🎓</div>
+        <h2>AI Course Finder</h2>
+        <p>Intelligent Learning Recommendation</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.divider()
 
     st.markdown(
-        "### 👤 Build Your Profile"
+        '<div class="sidebar-title">👤 BUILD YOUR AI PROFILE</div>',
+        unsafe_allow_html=True
     )
 
     interest = st.text_input(
-        "💡 Your Interest",
-        placeholder="e.g. Artificial Intelligence"
+        "💡 Interest",
+        placeholder="Artificial Intelligence"
     )
 
-    career_goal = st.text_input(
+    career = st.text_input(
         "🎯 Career Goal",
-        placeholder="e.g. AI Engineer"
+        placeholder="AI Engineer"
     )
 
     education = st.text_input(
         "🎓 Education",
-        placeholder="e.g. B.Sc Computer Science"
+        placeholder="B.Sc Computer Science"
     )
 
     skills = st.text_input(
-        "🛠️ Your Skills",
-        placeholder="e.g. Python, SQL, Pandas"
+        "🛠️ Skills",
+        placeholder="Python, SQL, Pandas"
     )
 
-    skill_level = st.selectbox(
+    level = st.selectbox(
         "📊 Skill Level",
         [
             "Beginner",
@@ -1091,203 +987,94 @@ with st.sidebar:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    recommend_button = st.button(
-        "🤖  GET AI RECOMMENDATIONS",
+    generate = st.button(
+        "🤖  FIND MY COURSES",
         type="primary",
         use_container_width=True
     )
 
     st.divider()
 
-    st.caption(
-        "🧠 AI Engine: TF-IDF + Cosine Similarity"
-    )
-
-    st.caption(
-        f"📂 Dataset: {loaded_dataset_file}"
-    )
-
-    st.caption(
-        f"📚 Records: {len(df):,}"
-    )
+    st.caption("🧠 AI: TF-IDF + Cosine Similarity")
+    st.caption(f"📚 Courses: {len(df):,}")
+    st.caption(f"📂 {dataset_file}")
 
 
 # ============================================================
-# HOME PAGE
+# LANDING PAGE
 # ============================================================
 
-if not recommend_button:
+if not generate:
 
-    st.markdown(
-        """
-        <div class="hero">
+    st.markdown("""
+    <div class="hero">
 
-        <div class="ai-badge">
-        🤖 AI-POWERED RECOMMENDATION ENGINE
-        </div>
+        <span class="hero-badge">
+        🤖 AI-POWERED • PERSONALIZED • SMART
+        </span>
 
-        <h1>🎓 Course Recommendation System</h1>
+        <h1>Find the Right Course<br>for Your Future.</h1>
 
         <p>
-        Discover the right courses based on your interests,
-        career goals, skills, education and experience level.
+        Tell us about your interests, career goals and skills.
+        Our AI analyzes your profile and discovers the courses
+        that best match your learning journey.
         </p>
 
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="section-heading">✨ Why use AI Course Finder?</div>',
+        unsafe_allow_html=True
+    )
+
+    a, b, c = st.columns(3)
+
+    with a:
+        st.markdown("""
+        <div class="course-card">
+            <div style="font-size:30px;">🧠</div>
+            <h3>AI-Powered Matching</h3>
+            <p class="course-reason">
+            NLP analyzes your profile and compares it
+            with available courses.
+            </p>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+        """, unsafe_allow_html=True)
 
-    st.markdown(
-        '<div class="section-title">🚀 Smart Course Discovery</div>',
-        unsafe_allow_html=True
-    )
-
-    st.write(
-        "Our AI engine analyzes your profile and finds "
-        "the courses that best match your career journey."
-    )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # Metrics
-
-    unique_courses = (
-        df[COURSE_COL]
-        .astype(str)
-        .apply(normalize)
-        .nunique()
-    )
-
-    categories = (
-        df[INTEREST_COL].nunique()
-        if INTEREST_COL
-        else 0
-    )
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-                <div class="metric-title">Dataset Records</div>
-                <div class="metric-value">{len(df):,}</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col2:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-                <div class="metric-title">Unique Courses</div>
-                <div class="metric-value">{unique_courses:,}</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col3:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-                <div class="metric-title">AI Technology</div>
-                <div class="metric-value">NLP</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col4:
-
-        st.markdown(
-            """
-            <div class="metric-card">
-                <div class="metric-title">Recommendations</div>
-                <div class="metric-value">Top 5</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # AI process
-
-    st.markdown(
-        '<div class="section-title">🧠 How Our AI Works</div>',
-        unsafe_allow_html=True
-    )
-
-    p1, p2, p3 = st.columns(3)
-
-    with p1:
-
-        st.markdown(
-            """
-            <div class="course-card">
-
-            <h3>01 • Profile Analysis</h3>
-
-            <p class="course-description">
-            AI analyzes your interests, career goal,
-            skills, education and skill level.
+    with b:
+        st.markdown("""
+        <div class="course-card">
+            <div style="font-size:30px;">🎯</div>
+            <h3>Personalized Results</h3>
+            <p class="course-reason">
+            Recommendations are based on your interests,
+            skills and career goals.
             </p>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with p2:
-
-        st.markdown(
-            """
-            <div class="course-card">
-
-            <h3>02 • Semantic Matching</h3>
-
-            <p class="course-description">
-            TF-IDF and Cosine Similarity compare
-            your profile with course information.
-            </p>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with p3:
-
-        st.markdown(
-            """
-            <div class="course-card">
-
-            <h3>03 • Smart Ranking</h3>
-
-            <p class="course-description">
-            Courses are scored and ranked to provide
-            the top 5 personalized recommendations.
-            </p>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    st.markdown(
-        """
-        <div class="footer">
-        🎓 AI Course Recommendation System
-        • Personalized Learning • Smart Career Planning
         </div>
-        """,
+        """, unsafe_allow_html=True)
+
+    with c:
+        st.markdown("""
+        <div class="course-card">
+            <div style="font-size:30px;">📊</div>
+            <h3>Explainable AI</h3>
+            <p class="course-reason">
+            See the AI match percentage and understand
+            why each course was recommended.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="section-heading">🚀 Get Started</div>',
         unsafe_allow_html=True
+    )
+
+    st.info(
+        "Fill your profile using the left panel and click "
+        "'FIND MY COURSES' to generate personalized recommendations."
     )
 
     st.stop()
@@ -1298,61 +1085,139 @@ if not recommend_button:
 # ============================================================
 
 if not interest.strip():
-
     st.warning("⚠️ Please enter your Interest.")
     st.stop()
 
-if not career_goal.strip():
-
+if not career.strip():
     st.warning("⚠️ Please enter your Career Goal.")
     st.stop()
 
 if not education.strip():
-
     st.warning("⚠️ Please enter your Education.")
     st.stop()
 
 if not skills.strip():
-
     st.warning("⚠️ Please enter your Skills.")
     st.stop()
 
 
 # ============================================================
-# AI PROCESSING
+# AI RECOMMENDATION
 # ============================================================
 
 with st.spinner(
-    "🤖 AI is analyzing your profile and finding the best courses..."
+    "🤖 AI is analyzing your profile..."
 ):
 
-    recommendations = recommend_courses(
+    results = recommend(
         interest,
-        career_goal,
+        career,
         education,
         skills,
-        skill_level
-    ).head(TOP_N)
+        level
+    ).head(5)
 
 
 # ============================================================
-# RESULT HEADER
+# RESULTS HERO
+# ============================================================
+
+st.markdown("""
+<div class="hero">
+
+    <span class="hero-badge">
+    ✨ AI ANALYSIS COMPLETE
+    </span>
+
+    <h1>Your Personalized Learning Path</h1>
+
+    <p>
+    We analyzed your profile and ranked the most relevant
+    courses using our AI recommendation engine.
+    </p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# USER PROFILE DISPLAY
 # ============================================================
 
 st.markdown(
-    """
-    <div class="hero">
+    '<div class="section-heading">👤 Your AI Profile</div>',
+    unsafe_allow_html=True
+)
 
-    <div class="ai-badge">
-    ✨ PERSONALIZED AI RESULTS
-    </div>
+st.markdown(
+    '<div class="section-subtitle">The information used by AI to generate your recommendations.</div>',
+    unsafe_allow_html=True
+)
 
-    <h1>🎯 Your Recommended Courses</h1>
+p1, p2, p3, p4, p5 = st.columns(5)
 
-    <p>
-    Based on your profile, our AI identified the
-    most relevant learning opportunities for you.
-    </p>
+profile_items = [
+    ("💡", "Interest", interest),
+    ("🎯", "Career Goal", career),
+    ("🎓", "Education", education),
+    ("🛠️", "Skills", skills),
+    ("📊", "Level", level)
+]
+
+for col, item in zip(
+    [p1, p2, p3, p4, p5],
+    profile_items
+):
+
+    icon, label, val = item
+
+    with col:
+
+        st.markdown(
+            f"""
+            <div class="profile-card">
+
+                <div class="profile-icon">{icon}</div>
+
+                <div class="profile-label">
+                {label}
+                </div>
+
+                <div class="profile-value">
+                {val}
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# AI ANALYSIS
+# ============================================================
+
+st.markdown(
+    '<div class="section-heading">🤖 AI Profile Analysis</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    f"""
+    <div class="ai-analysis">
+
+        <div class="ai-analysis-title">
+        ✨ AI has analyzed your learning profile
+        </div>
+
+        <div class="ai-analysis-text">
+        Your profile focuses on <b>{interest}</b>,
+        with a career goal of <b>{career}</b>.
+        Based on your <b>{skills}</b> skills,
+        <b>{education}</b> background and
+        <b>{level}</b> experience level,
+        the AI ranked the most relevant courses below.
+        </div>
 
     </div>
     """,
@@ -1361,100 +1226,128 @@ st.markdown(
 
 
 # ============================================================
-# BEST MATCH
+# BEST COURSE
 # ============================================================
 
-if not recommendations.empty:
+if len(results) > 0:
 
-    best_course = recommendations.iloc[0]
+    best = results.iloc[0]
 
-    best_name = row_value(
-        best_course,
+    best_name = value(
+        best,
         COURSE_COL
     )
 
     best_score = float(
-        best_course["AI_Score"]
+        best["AI_Score"]
     )
 
     st.markdown(
-        """
-        <div class="section-title">
-        🏆 Best Match For You
-        </div>
-        """,
+        '<div class="section-heading">🏆 Best Course Match</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
         f"""
-        <div class="best-match">
+        <div class="best-card">
 
-        <div class="best-label">
-        🥇 AI TOP RECOMMENDATION
-        </div>
+            <span class="best-badge">
+            🥇 TOP AI RECOMMENDATION
+            </span>
 
-        <h2 style="margin:8px 0;color:#111827;">
-        {best_name}
-        </h2>
+            <div class="best-title">
+            {best_name}
+            </div>
 
-        <p style="color:#64748b;">
-        {best_course["AI_Explanation"]}
-        </p>
+            <div class="best-description">
+            {value(best, "AI_Reason")}
+            </div>
 
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    b1, b2, b3 = st.columns(3)
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    with b1:
+    q1, q2, q3, q4 = st.columns(4)
 
-        st.metric(
-            "🤖 AI Match",
-            f"{best_score:.0f}%"
+    with q1:
+
+        st.markdown(
+            f"""
+            <div class="score-circle">
+                <div class="score-number">{best_score:.0f}%</div>
+                <div class="score-text">AI MATCH</div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-    with b2:
+    with q2:
 
-        st.metric(
-            "🏆 Rank",
-            "#1"
+        st.markdown(
+            f"""
+            <div class="info-card">
+                <div class="info-label">💼 Career Role</div>
+                <div class="info-value">
+                {value(best, CAREER_COL) or "Not specified"}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-    with b3:
+    with q3:
 
-        rating = row_value(
-            best_course,
-            RATING_COL
+        st.markdown(
+            f"""
+            <div class="info-card">
+                <div class="info-label">⭐ Rating</div>
+                <div class="info-value">
+                {value(best, RATING_COL) or "Not specified"}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-        st.metric(
-            "⭐ Rating",
-            rating if rating else "N/A"
+    with q4:
+
+        st.markdown(
+            f"""
+            <div class="info-card">
+                <div class="info-label">⏱ Duration</div>
+                <div class="info-value">
+                {value(best, DURATION_COL) or "Not specified"}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
 
 # ============================================================
-# RECOMMENDATIONS
+# TOP 5
 # ============================================================
 
 st.markdown(
-    """
-    <div class="section-title">
-    📚 Top 5 AI Course Recommendations
-    </div>
-    """,
+    '<div class="section-heading">✨ Top 5 AI Recommendations</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="section-subtitle">Courses ranked according to your personalized AI match score.</div>',
     unsafe_allow_html=True
 )
 
 
-for index, (_, row) in enumerate(
-    recommendations.iterrows()
+for rank, (_, row) in enumerate(
+    results.iterrows(),
+    start=1
 ):
 
-    course_name = row_value(
+    course_name = value(
         row,
         COURSE_COL
     )
@@ -1463,339 +1356,250 @@ for index, (_, row) in enumerate(
         row["AI_Score"]
     )
 
-    career_role = row_value(
+    reason = value(
         row,
-        CAREER_COL
-    )
-
-    duration = row_value(
-        row,
-        DURATION_COL
-    )
-
-    rating = row_value(
-        row,
-        RATING_COL
-    )
-
-    salary = row_value(
-        row,
-        SALARY_COL
-    )
-
-    course_skills = row_value(
-        row,
-        SKILLS_COL
-    )
-
-    explanation = row_value(
-        row,
-        "AI_Explanation"
+        "AI_Reason"
     )
 
     st.markdown(
         f"""
         <div class="course-card">
 
-        <span class="rank">
-        ⭐ RANK {index + 1}
-        </span>
+            <span class="rank-badge">
+            #{rank} RECOMMENDED
+            </span>
 
-        <div class="course-title">
-        {course_name}
-        </div>
+            <div class="course-name">
+            {course_name}
+            </div>
 
-        <p class="course-description">
-        {explanation}
-        </p>
+            <div class="course-reason">
+            💡 {reason}
+            </div>
 
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    c1, c2 = st.columns([5, 1])
+    x1, x2 = st.columns([5, 1])
 
-    with c1:
+    with x1:
 
         st.progress(
             min(score / 100, 1.0)
         )
 
-    with c2:
+    with x2:
 
         st.markdown(
             f"""
-            <div class="score-box">
+            <div class="match-box">
 
-            <div class="score-number">
-            {score:.0f}%
-            </div>
+                <div class="match-number">
+                {score:.0f}%
+                </div>
 
-            <div class="score-label">
-            AI MATCH
-            </div>
+                <div class="match-label">
+                AI MATCH
+                </div>
 
             </div>
             """,
             unsafe_allow_html=True
         )
 
-    d1, d2, d3, d4 = st.columns(4)
+    y1, y2, y3, y4 = st.columns(4)
 
-    with d1:
+    info = [
+        ("💼 Career", value(row, CAREER_COL)),
+        ("🛠️ Skills", value(row, SKILLS_COL)),
+        ("⏱ Duration", value(row, DURATION_COL)),
+        ("⭐ Rating", value(row, RATING_COL))
+    ]
 
-        st.markdown(
-            f"""
-            <div class="info-pill">
+    for col, (label, val) in zip(
+        [y1, y2, y3, y4],
+        info
+    ):
 
-            <div class="info-label">
-            💼 Career
-            </div>
+        with col:
 
-            <div class="info-value">
-            {career_role if career_role else "Not specified"}
-            </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with d2:
-
-        st.markdown(
-            f"""
-            <div class="info-pill">
-
-            <div class="info-label">
-            ⏱️ Duration
-            </div>
-
-            <div class="info-value">
-            {duration if duration else "Not specified"}
-            </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with d3:
-
-        st.markdown(
-            f"""
-            <div class="info-pill">
-
-            <div class="info-label">
-            ⭐ Rating
-            </div>
-
-            <div class="info-value">
-            {rating if rating else "Not specified"}
-            </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with d4:
-
-        st.markdown(
-            f"""
-            <div class="info-pill">
-
-            <div class="info-label">
-            💰 Salary
-            </div>
-
-            <div class="info-value">
-            {salary if salary else "Not specified"}
-            </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    if course_skills:
-
-        st.markdown(
-            f"""
-            <div style="
-            background:#f8fafc;
-            padding:12px 16px;
-            border-radius:12px;
-            margin-top:12px;
-            color:#475569;
-            font-size:13px;
-            ">
-            🛠️ <b>Recommended Skills:</b> {course_skills}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+            st.markdown(
+                f"""
+                <div class="info-card">
+                    <div class="info-label">{label}</div>
+                    <div class="info-value">
+                    {val or "Not specified"}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
 
 # ============================================================
-# SUMMARY
+# STATISTICS
 # ============================================================
 
 st.markdown(
-    """
-    <div class="section-title">
-    📊 Recommendation Summary
-    </div>
-    """,
+    '<div class="section-heading">📊 Recommendation Insights</div>',
     unsafe_allow_html=True
 )
 
-summary_data = []
+average_score = results["AI_Score"].mean()
 
-for index, (_, row) in enumerate(
-    recommendations.iterrows()
+highest_score = results["AI_Score"].max()
+
+total_results = len(results)
+
+s1, s2, s3, s4 = st.columns(4)
+
+stats = [
+    ("🤖", f"{average_score:.0f}%", "Average AI Match"),
+    ("🏆", f"{highest_score:.0f}%", "Best Match"),
+    ("📚", str(total_results), "Courses Found"),
+    ("🧠", "NLP", "AI Technology")
+]
+
+for col, stat in zip(
+    [s1, s2, s3, s4],
+    stats
 ):
 
-    summary_data.append({
+    icon, number, label = stat
 
-        "Rank": index + 1,
+    with col:
 
-        "Course": row_value(
-            row,
-            COURSE_COL
-        ),
+        st.markdown(
+            f"""
+            <div class="stat">
 
-        "AI Match": (
-            f"{float(row['AI_Score']):.0f}%"
-        ),
+                <div class="stat-icon">{icon}</div>
 
-        "Career": row_value(
-            row,
-            CAREER_COL
-        ),
+                <div class="stat-value">
+                {number}
+                </div>
 
-        "Duration": row_value(
-            row,
-            DURATION_COL
-        ),
+                <div class="stat-label">
+                {label}
+                </div>
 
-        "Rating": row_value(
-            row,
-            RATING_COL
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-
-    })
-
-
-summary_df = pd.DataFrame(
-    summary_data
-)
-
-st.dataframe(
-    summary_df,
-    use_container_width=True,
-    hide_index=True
-)
 
 
 # ============================================================
-# AI MATCH CHART
+# MATCH CHART
 # ============================================================
 
 st.markdown(
-    """
-    <div class="section-title">
-    📈 AI Match Comparison
-    </div>
-    """,
+    '<div class="section-heading">📈 AI Match Analytics</div>',
     unsafe_allow_html=True
 )
 
-chart_data = pd.DataFrame({
+chart = pd.DataFrame({
 
     "Course": [
-        row_value(
-            row,
-            COURSE_COL
-        )
-        for _, row in recommendations.iterrows()
+        value(row, COURSE_COL)
+        for _, row in results.iterrows()
     ],
 
-    "AI Match %": [
-        round(
-            float(row["AI_Score"]),
-            1
-        )
-        for _, row in recommendations.iterrows()
+    "AI Match": [
+        float(row["AI_Score"])
+        for _, row in results.iterrows()
     ]
 
 })
 
 st.bar_chart(
-    chart_data.set_index("Course")
+    chart.set_index("Course"),
+    height=350
 )
 
 
 # ============================================================
-# AI TECHNOLOGY INFORMATION
+# HOW AI WORKS
 # ============================================================
 
 st.markdown(
-    """
-    <div class="course-card">
-
-    <h3>🤖 AI Recommendation Technology</h3>
-
-    <p class="course-description">
-
-    <b>TF-IDF:</b>
-    Converts user profile and course information
-    into numerical feature vectors.
-
-    <br><br>
-
-    <b>Cosine Similarity:</b>
-    Measures semantic similarity between the
-    student's profile and available courses.
-
-    <br><br>
-
-    <b>Hybrid Scoring:</b>
-    Combines semantic similarity with interest,
-    career goal, skills, education and skill level.
-
-    <br><br>
-
-    <b>Explainable AI:</b>
-    Shows why each course was recommended.
-
-    </p>
-
-    </div>
-    """,
+    '<div class="section-heading">🧠 How the AI Makes Recommendations</div>',
     unsafe_allow_html=True
 )
+
+h1, h2, h3 = st.columns(3)
+
+with h1:
+
+    st.markdown("""
+    <div class="course-card">
+
+        <div style="font-size:28px;">01️⃣</div>
+
+        <h3>Profile Understanding</h3>
+
+        <p class="course-reason">
+        AI analyzes your interests, career goal,
+        education, skills and experience level.
+        </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+with h2:
+
+    st.markdown("""
+    <div class="course-card">
+
+        <div style="font-size:28px;">02️⃣</div>
+
+        <h3>Semantic Matching</h3>
+
+        <p class="course-reason">
+        TF-IDF converts profile and course information
+        into vectors and Cosine Similarity measures
+        their relevance.
+        </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+with h3:
+
+    st.markdown("""
+    <div class="course-card">
+
+        <div style="font-size:28px;">03️⃣</div>
+
+        <h3>Smart Ranking</h3>
+
+        <p class="course-reason">
+        The hybrid AI score ranks the most suitable
+        courses and displays the Top 5 recommendations.
+        </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-st.markdown(
-    """
-    <div class="footer">
+st.markdown("""
+<div class="footer">
 
     🎓 <b>AI Course Recommendation System</b>
-
     <br>
+    Personalized Learning • Intelligent Matching • Explainable AI
+    <br><br>
+    Built with Python • Streamlit • Scikit-learn
 
-    Personalized Learning • Intelligent Matching •
-    Explainable AI
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
