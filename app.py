@@ -3,7 +3,6 @@ import re
 import numpy as np
 import pandas as pd
 import streamlit as st
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -27,10 +26,6 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* =========================
-   MAIN BACKGROUND
-   ========================= */
-
 .stApp {
     background: linear-gradient(
         135deg,
@@ -39,11 +34,6 @@ st.markdown("""
         #ecfeff 100%
     );
 }
-
-
-/* =========================
-   SIDEBAR BACKGROUND
-   ========================= */
 
 [data-testid="stSidebar"] {
     background: linear-gradient(
@@ -54,20 +44,10 @@ st.markdown("""
     );
 }
 
-
-/* =========================
-   SIDEBAR LABELS
-   ========================= */
-
 [data-testid="stSidebar"] label {
     color: white !important;
     font-weight: 600 !important;
 }
-
-
-/* =========================
-   TEXT INPUT BOX
-   ========================= */
 
 [data-testid="stSidebar"] input {
     color: #111827 !important;
@@ -75,52 +55,32 @@ st.markdown("""
     border-radius: 10px !important;
 }
 
-
-/* Input placeholder */
 [data-testid="stSidebar"] input::placeholder {
     color: #6b7280 !important;
 }
-
-
-/* =========================
-   SELECTBOX
-   ========================= */
 
 [data-testid="stSidebar"] [data-baseweb="select"] {
     background-color: white !important;
     border-radius: 10px !important;
 }
 
-
-/* Selected value */
 [data-testid="stSidebar"] [data-baseweb="select"] > div {
     background-color: white !important;
     color: #111827 !important;
 }
 
-
-/* Selectbox text */
 [data-testid="stSidebar"] [data-baseweb="select"] span {
     color: #111827 !important;
 }
 
-
-/* Selectbox inner text */
 [data-testid="stSidebar"] [data-baseweb="select"] input {
     color: #111827 !important;
 }
 
-
-/* Arrow */
 [data-testid="stSidebar"] [data-baseweb="select"] svg {
     fill: #111827 !important;
     color: #111827 !important;
 }
-
-
-/* =========================
-   SELECTBOX DROPDOWN
-   ========================= */
 
 div[data-baseweb="popover"] {
     background-color: white !important;
@@ -136,11 +96,6 @@ div[data-baseweb="popover"] li:hover {
     color: #312e81 !important;
 }
 
-
-/* =========================
-   BUTTON
-   ========================= */
-
 .stButton > button {
     background: linear-gradient(
         90deg,
@@ -148,46 +103,25 @@ div[data-baseweb="popover"] li:hover {
         #7c3aed,
         #db2777
     ) !important;
-
     color: white !important;
-
     border: none !important;
-
     border-radius: 12px !important;
-
     font-weight: bold !important;
-
     padding: 12px !important;
-
     box-shadow: 0px 5px 15px rgba(0,0,0,0.20);
 }
 
-
 .stButton > button:hover {
     transform: translateY(-2px);
-
     box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
 }
 
-
-/* =========================
-   METRIC CARDS
-   ========================= */
-
 div[data-testid="stMetric"] {
     background: white !important;
-
     border-radius: 18px !important;
-
     padding: 18px !important;
-
     box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
 }
-
-
-/* =========================
-   HEADINGS
-   ========================= */
 
 h1 {
     color: #312e81 !important;
@@ -202,11 +136,6 @@ h3 {
     color: #6d28d9 !important;
 }
 
-
-/* =========================
-   PROGRESS BAR
-   ========================= */
-
 div[data-testid="stProgress"] > div > div {
     background: linear-gradient(
         90deg,
@@ -216,17 +145,14 @@ div[data-testid="stProgress"] > div > div {
     ) !important;
 }
 
-
-/* =========================
-   SIDEBAR DIVIDER
-   ========================= */
-
 [data-testid="stSidebar"] hr {
     border-color: rgba(255,255,255,0.25) !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
+
+
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -235,6 +161,7 @@ TOP_N = 5
 
 DATASET_FILES = [
     "course_recommendation_dataset_1000.csv",
+    "final_data.csv",
     "course_recommendation_dataset_1000.cs"
 ]
 
@@ -254,10 +181,7 @@ def find_dataset_file():
 
         for file_name in os.listdir("."):
 
-            if (
-                file_name.lower().endswith(".csv")
-                or file_name.lower().endswith(".cs")
-            ):
+            if file_name.lower().endswith(".csv"):
                 return file_name
 
     except Exception:
@@ -299,10 +223,6 @@ def load_data():
         return None, dataset_file
 
 
-# ============================================================
-# LOAD DATA
-# ============================================================
-
 df, loaded_dataset_file = load_data()
 
 
@@ -321,9 +241,7 @@ if df is None:
     except Exception:
         pass
 
-    st.info(
-        "Keep the dataset file in the same folder as app.py."
-    )
+    st.info("Keep the CSV dataset in the same folder as app.py.")
 
     st.stop()
 
@@ -435,6 +353,7 @@ if COURSE_COL is None:
     st.error("❌ Course column was not found.")
 
     st.write("Available columns:")
+
     st.write(list(df.columns))
 
     st.stop()
@@ -561,10 +480,40 @@ RELATED_TERMS = {
         "devops"
     ],
 
+    "cloud engineer": [
+        "cloud",
+        "cloud computing",
+        "aws",
+        "azure",
+        "google cloud",
+        "devops"
+    ],
+
     "cyber security": [
         "cyber security",
         "cybersecurity",
         "ethical hacking",
+        "network security",
+        "information security",
+        "penetration testing",
+        "cyber defense"
+    ],
+
+    "cybersecurity": [
+        "cyber security",
+        "cybersecurity",
+        "ethical hacking",
+        "network security",
+        "information security",
+        "penetration testing",
+        "cyber defense"
+    ],
+
+    "ethical hacking": [
+        "ethical hacking",
+        "cyber security",
+        "cybersecurity",
+        "penetration testing",
         "network security",
         "information security"
     ],
@@ -596,6 +545,17 @@ RELATED_TERMS = {
         "data analytics",
         "data science",
         "business intelligence"
+    ],
+
+    "devops": [
+        "devops",
+        "cloud",
+        "cloud computing",
+        "aws",
+        "azure",
+        "docker",
+        "kubernetes",
+        "ci cd"
     ]
 }
 
@@ -608,14 +568,81 @@ def expand_terms(text):
 
     text = normalize(text)
 
+    if not text:
+        return ""
+
     expanded = [text]
 
     for key, values in RELATED_TERMS.items():
 
         if key in text:
+
             expanded.extend(values)
 
     return " ".join(expanded)
+
+
+# ============================================================
+# TOKENIZE SKILLS
+# ============================================================
+
+def skill_tokens(text):
+
+    text = normalize(text)
+
+    if not text:
+        return []
+
+    text = text.replace("|", ",")
+    text = text.replace(";", ",")
+
+    parts = text.split(",")
+
+    tokens = []
+
+    for part in parts:
+
+        part = normalize(part)
+
+        if part:
+            tokens.append(part)
+
+    return tokens
+
+
+# ============================================================
+# SKILL MATCH
+# ============================================================
+
+def calculate_skill_match(user_skills, course_skills):
+
+    user_list = skill_tokens(user_skills)
+    course_text = normalize(course_skills)
+
+    if not user_list or not course_text:
+        return 0.0
+
+    matched = 0
+
+    for skill in user_list:
+
+        if skill in course_text:
+
+            matched += 1
+            continue
+
+        related = RELATED_TERMS.get(skill, [])
+
+        if any(
+            normalize(term) in course_text
+            for term in related
+        ):
+            matched += 1
+
+    return min(
+        matched / len(user_list),
+        1.0
+    )
 
 
 # ============================================================
@@ -670,45 +697,6 @@ def related_match(user_text, course_text):
 
 
 # ============================================================
-# SKILL MATCH
-# ============================================================
-
-def calculate_skill_match(
-    user_skills,
-    course_skills
-):
-
-    user_skills = normalize(user_skills)
-    course_skills = normalize(course_skills)
-
-    if not user_skills or not course_skills:
-        return 0.0
-
-    user_skill_list = re.split(
-        r",|;|\|",
-        user_skills
-    )
-
-    user_skill_list = [
-        skill.strip()
-        for skill in user_skill_list
-        if skill.strip()
-    ]
-
-    matched = 0
-
-    for skill in user_skill_list:
-
-        if skill in course_skills:
-            matched += 1
-
-    return min(
-        matched / len(user_skill_list),
-        1.0
-    )
-
-
-# ============================================================
 # EDUCATION MATCH
 # ============================================================
 
@@ -728,6 +716,27 @@ def calculate_education_match(
 
     if user in course or course in user:
         return 1.0
+
+    education_keywords = [
+        "btech",
+        "b.e",
+        "be",
+        "mtech",
+        "m.e",
+        "me",
+        "bca",
+        "mca",
+        "bsc",
+        "msc",
+        "diploma",
+        "12th",
+        "10th"
+    ]
+
+    for keyword in education_keywords:
+
+        if keyword in user and keyword in course:
+            return 1.0
 
     return 0.0
 
@@ -775,12 +784,15 @@ def create_course_profile(row):
         row_value(row, EDUCATION_COL),
 
         row_value(row, LEVEL_COL)
+
     ]
 
     return " ".join(
-        normalize(value)
+
+        expand_terms(value)
         for value in values
         if value
+
     )
 
 
@@ -824,18 +836,42 @@ def recommend_courses(
 
     data = prepare_unique_courses()
 
+    if data.empty:
+        return data
+
+    # --------------------------------------------------------
+    # COURSE PROFILES
+    # --------------------------------------------------------
+
     course_profiles = [
+
         create_course_profile(row)
+
         for _, row in data.iterrows()
+
     ]
 
+    # --------------------------------------------------------
+    # USER PROFILE
+    # --------------------------------------------------------
+
     user_profile = " ".join([
+
         expand_terms(interest),
+
         expand_terms(career_goal),
-        normalize(education),
+
         expand_terms(skills),
+
+        normalize(education),
+
         normalize(skill_level)
+
     ])
+
+    # --------------------------------------------------------
+    # TF-IDF + COSINE SIMILARITY
+    # --------------------------------------------------------
 
     documents = [
         user_profile
@@ -859,7 +895,13 @@ def recommend_courses(
 
     except Exception:
 
-        nlp_scores = np.zeros(len(data))
+        nlp_scores = np.zeros(
+            len(data)
+        )
+
+    # --------------------------------------------------------
+    # CALCULATE FINAL SCORE
+    # --------------------------------------------------------
 
     scores = []
 
@@ -897,6 +939,10 @@ def recommend_courses(
             LEVEL_COL
         )
 
+        # ----------------------------------------------------
+        # INDIVIDUAL MATCHES
+        # ----------------------------------------------------
+
         interest_score = related_match(
             interest,
             course_name + " " + course_interest
@@ -926,36 +972,64 @@ def recommend_courses(
             nlp_scores[index]
         )
 
+        # ----------------------------------------------------
+        # WEIGHTED HYBRID SCORE
+        # ----------------------------------------------------
+        #
+        # Interest       = 30%
+        # Career Goal    = 30%
+        # Skills         = 20%
+        # Education      = 10%
+        # Skill Level    = 5%
+        # TF-IDF         = 5%
+        #
+        # TOTAL          = 100%
+        #
+
         final_score = (
 
             interest_score * 30
 
             + career_score * 30
 
-            + skill_score * 15
+            + skill_score * 20
 
             + education_score * 10
 
             + level_score * 5
 
-            + nlp_score * 10
+            + nlp_score * 5
+
         )
 
-        final_score = min(
-            final_score,
-            100
+        final_score = float(
+            np.clip(
+                final_score,
+                0,
+                100
+            )
         )
 
         scores.append(final_score)
 
+    # --------------------------------------------------------
+    # ADD SCORE
+    # --------------------------------------------------------
+
     data["AI_Score"] = scores
+
+    # --------------------------------------------------------
+    # SORT
+    # --------------------------------------------------------
 
     data = data.sort_values(
         by="AI_Score",
         ascending=False
     )
 
-    return data.reset_index(drop=True)
+    return data.reset_index(
+        drop=True
+    )
 
 
 # ============================================================
@@ -984,12 +1058,12 @@ with st.sidebar:
 
     education = st.text_input(
         "🎓 Education",
-        placeholder="Example: Diploma"
+        placeholder="Example: B.Tech"
     )
 
     skills = st.text_input(
         "🛠️ Your Skills",
-        placeholder="Example: Python, Pandas, SQL"
+        placeholder="Example: Python, SQL"
     )
 
     skill_level = st.selectbox(
@@ -1024,7 +1098,9 @@ with st.sidebar:
 
 if not recommend_button:
 
-    st.title("🎓 Course Recommendation System")
+    st.title(
+        "🎓 Course Recommendation System"
+    )
 
     st.subheader(
         "🤖 AI-Powered Personalized Course Recommendations"
@@ -1064,7 +1140,7 @@ if not recommend_button:
 
         st.metric(
             "🤖 AI Matching",
-            "NLP + Profile"
+            "Hybrid AI"
         )
 
     with c4:
@@ -1096,7 +1172,7 @@ if not recommend_button:
 
         st.warning(
             "📈 **Smart Ranking**\n\n"
-            "Courses are ranked using an AI matching score."
+            "Courses are ranked using a hybrid AI matching score."
         )
 
     st.stop()
@@ -1163,42 +1239,57 @@ with st.spinner(
 # RESULTS HEADER
 # ============================================================
 
-st.title("🎓 Course Recommendation System")
-st.subheader("🤖 AI-Powered Personalized Course Recommendations")
+st.title(
+    "🎓 Course Recommendation System"
+)
+
+st.subheader(
+    "🤖 AI-Powered Personalized Course Recommendations"
+)
+
 st.write(
     "🎯 Personalized course recommendations based on your profile."
 )
+
 st.divider()
+
 
 # ============================================================
 # PROFILE SUMMARY
 # ============================================================
 
-st.subheader("👤 Your Learning Profile")
+st.subheader(
+    "👤 Your Learning Profile"
+)
 
 p1, p2, p3, p4, p5 = st.columns(5)
 
 with p1:
+
     st.info(
         f"💡 **Interest**\n\n{interest}"
     )
 
 with p2:
+
     st.info(
         f"🎯 **Career Goal**\n\n{career_goal}"
     )
 
 with p3:
+
     st.info(
         f"🎓 **Education**\n\n{education}"
     )
 
 with p4:
+
     st.info(
         f"🛠️ **Skills**\n\n{skills}"
     )
 
 with p5:
+
     st.info(
         f"📊 **Level**\n\n{skill_level}"
     )
@@ -1223,7 +1314,9 @@ if not recommendations.empty:
 
     st.divider()
 
-    st.subheader("🏆 Best Match")
+    st.subheader(
+        "🏆 Best Match"
+    )
 
     b1, b2 = st.columns([4, 1])
 
@@ -1252,7 +1345,9 @@ if not recommendations.empty:
 
 st.divider()
 
-st.subheader("📚 Top 5 Course Recommendations")
+st.subheader(
+    "📚 Top 5 Course Recommendations"
+)
 
 
 for index, (_, row) in enumerate(
@@ -1343,7 +1438,9 @@ for index, (_, row) in enumerate(
 # SUMMARY TABLE
 # ============================================================
 
-st.subheader("📊 Recommendation Summary")
+st.subheader(
+    "📊 Recommendation Summary"
+)
 
 summary_data = []
 
@@ -1382,6 +1479,7 @@ for index, (_, row) in enumerate(
                 row,
                 RATING_COL
             )
+
     })
 
 
@@ -1400,17 +1498,22 @@ st.dataframe(
 # AI SCORE CHART
 # ============================================================
 
-st.subheader("📈 AI Match Comparison")
+st.subheader(
+    "📈 AI Match Comparison"
+)
 
 chart_data = pd.DataFrame({
 
     "Course": [
+
         row_value(
             row,
             COURSE_COL
         )
+
         for _, row
         in recommendations.iterrows()
+
     ],
 
     "AI Match": [
@@ -1424,13 +1527,49 @@ chart_data = pd.DataFrame({
 
         for _, row
         in recommendations.iterrows()
+
     ]
+
 })
 
 
 st.bar_chart(
     chart_data.set_index("Course")
 )
+
+
+# ============================================================
+# METHODOLOGY
+# ============================================================
+
+st.divider()
+
+st.subheader(
+    "🧠 Recommendation Method"
+)
+
+m1, m2, m3 = st.columns(3)
+
+with m1:
+
+    st.info(
+        "🔎 **Profile Matching**\n\n"
+        "Interest, career goal, skills, education and skill level are analyzed."
+    )
+
+with m2:
+
+    st.success(
+        "📚 **TF-IDF + Cosine Similarity**\n\n"
+        "Text similarity is used to understand relationships between the user profile and courses."
+    )
+
+with m3:
+
+    st.warning(
+        "🏆 **Weighted Ranking**\n\n"
+        "All matching factors are combined into a final AI Match score from 0–100%."
+    )
 
 
 # ============================================================
@@ -1441,5 +1580,5 @@ st.divider()
 
 st.success(
     "🎓 Course Recommendation System | "
-    "🤖 AI-Powered Personalized Recommendations"
+    "🤖 Hybrid AI-Powered Personalized Recommendations"
 )
