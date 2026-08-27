@@ -27,6 +27,10 @@ st.set_page_config(
 st.markdown("""
 <style>
 
+/* =========================
+   MAIN BACKGROUND
+   ========================= */
+
 .stApp {
     background: linear-gradient(
         135deg,
@@ -36,18 +40,106 @@ st.markdown("""
     );
 }
 
+
+/* =========================
+   SIDEBAR BACKGROUND
+   ========================= */
+
 [data-testid="stSidebar"] {
     background: linear-gradient(
         180deg,
-        #312e81,
-        #4c1d95,
-        #831843
+        #312e81 0%,
+        #4c1d95 50%,
+        #831843 100%
     );
 }
 
-[data-testid="stSidebar"] * {
+
+/* =========================
+   SIDEBAR LABELS
+   ========================= */
+
+[data-testid="stSidebar"] label {
     color: white !important;
+    font-weight: 600 !important;
 }
+
+
+/* =========================
+   TEXT INPUT BOX
+   ========================= */
+
+[data-testid="stSidebar"] input {
+    color: #111827 !important;
+    background-color: white !important;
+    border-radius: 10px !important;
+}
+
+
+/* Input placeholder */
+[data-testid="stSidebar"] input::placeholder {
+    color: #6b7280 !important;
+}
+
+
+/* =========================
+   SELECTBOX
+   ========================= */
+
+[data-testid="stSidebar"] [data-baseweb="select"] {
+    background-color: white !important;
+    border-radius: 10px !important;
+}
+
+
+/* Selected value */
+[data-testid="stSidebar"] [data-baseweb="select"] > div {
+    background-color: white !important;
+    color: #111827 !important;
+}
+
+
+/* Selectbox text */
+[data-testid="stSidebar"] [data-baseweb="select"] span {
+    color: #111827 !important;
+}
+
+
+/* Selectbox inner text */
+[data-testid="stSidebar"] [data-baseweb="select"] input {
+    color: #111827 !important;
+}
+
+
+/* Arrow */
+[data-testid="stSidebar"] [data-baseweb="select"] svg {
+    fill: #111827 !important;
+    color: #111827 !important;
+}
+
+
+/* =========================
+   SELECTBOX DROPDOWN
+   ========================= */
+
+div[data-baseweb="popover"] {
+    background-color: white !important;
+}
+
+div[data-baseweb="popover"] li {
+    color: #111827 !important;
+    background-color: white !important;
+}
+
+div[data-baseweb="popover"] li:hover {
+    background-color: #ede9fe !important;
+    color: #312e81 !important;
+}
+
+
+/* =========================
+   BUTTON
+   ========================= */
 
 .stButton > button {
     background: linear-gradient(
@@ -55,33 +147,65 @@ st.markdown("""
         #2563eb,
         #7c3aed,
         #db2777
-    );
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    padding: 12px;
+    ) !important;
+
+    color: white !important;
+
+    border: none !important;
+
+    border-radius: 12px !important;
+
+    font-weight: bold !important;
+
+    padding: 12px !important;
+
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.20);
 }
+
 
 .stButton > button:hover {
-    background: linear-gradient(
-        90deg,
-        #1d4ed8,
-        #6d28d9,
-        #be185d
-    );
+    transform: translateY(-2px);
+
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
 }
 
+
+/* =========================
+   METRIC CARDS
+   ========================= */
+
 div[data-testid="stMetric"] {
-    background: white;
-    border-radius: 18px;
-    padding: 18px;
+    background: white !important;
+
+    border-radius: 18px !important;
+
+    padding: 18px !important;
+
     box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
 }
 
-div[data-testid="stMetric"]:hover {
-    transform: translateY(-3px);
+
+/* =========================
+   HEADINGS
+   ========================= */
+
+h1 {
+    color: #312e81 !important;
+    font-weight: 800 !important;
 }
+
+h2 {
+    color: #4c1d95 !important;
+}
+
+h3 {
+    color: #6d28d9 !important;
+}
+
+
+/* =========================
+   PROGRESS BAR
+   ========================= */
 
 div[data-testid="stProgress"] > div > div {
     background: linear-gradient(
@@ -89,26 +213,20 @@ div[data-testid="stProgress"] > div > div {
         #06b6d4,
         #6366f1,
         #ec4899
-    );
+    ) !important;
 }
 
-h1 {
-    color: #312e81;
-    font-weight: 800;
-}
 
-h2 {
-    color: #4c1d95;
-}
+/* =========================
+   SIDEBAR DIVIDER
+   ========================= */
 
-h3 {
-    color: #6d28d9;
+[data-testid="stSidebar"] hr {
+    border-color: rgba(255,255,255,0.25) !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
