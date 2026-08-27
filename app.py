@@ -1163,14 +1163,12 @@ with st.spinner(
 # RESULTS HEADER
 # ============================================================
 
-st.title("✨ AI Recommended Courses")
-
+st.title("🎓 Course Recommendation System")
+st.subheader("🤖 AI-Powered Personalized Course Recommendations")
 st.write(
-    "🎯 Personalized recommendations based on your profile."
+    "🎯 Personalized course recommendations based on your profile."
 )
-
 st.divider()
-
 
 # ============================================================
 # PROFILE SUMMARY
