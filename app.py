@@ -1100,14 +1100,7 @@ with st.sidebar:
         use_container_width=True
     )
 
-    # Dataset information without folder/file emoji
-    st.success(
-        f"Dataset: {loaded_dataset_file}"
-    )
-
-    st.caption(
-        f"{len(df):,} records loaded"
-    )
+    # Dataset information hidden from sidebar
 
 
 # ============================================================
