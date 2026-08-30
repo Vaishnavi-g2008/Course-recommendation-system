@@ -1063,24 +1063,77 @@ with st.sidebar:
 
     st.divider()
 
-    interest = st.text_input(
+    # ========================================================
+    # PROFILE OPTIONS
+    # ========================================================
+
+    interest = st.selectbox(
         "💡 Your Interest",
-        placeholder="Example: Artificial Intelligence"
+        [
+            "Artificial Intelligence",
+            "Machine Learning",
+            "Data Science",
+            "Data Analytics",
+            "Cyber Security",
+            "Cloud Computing",
+            "Web Development",
+            "DevOps",
+            "Software Development",
+            "Internet of Things"
+        ]
     )
 
-    career_goal = st.text_input(
+    career_goal = st.selectbox(
         "🎯 Career Goal",
-        placeholder="Example: AI Engineer"
+        [
+            "AI Engineer",
+            "Machine Learning Engineer",
+            "Data Scientist",
+            "Data Analyst",
+            "Cyber Security Analyst",
+            "Ethical Hacker",
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Web Developer",
+            "Software Engineer"
+        ]
     )
 
-    education = st.text_input(
+    education = st.selectbox(
         "🎓 Education",
-        placeholder="Example: B.Tech"
+        [
+            "10th",
+            "12th",
+            "Diploma",
+            "B.Tech",
+            "B.E",
+            "BCA",
+            "B.Sc",
+            "M.Tech",
+            "MCA",
+            "M.Sc"
+        ]
     )
 
-    skills = st.text_input(
+    skills = st.selectbox(
         "🛠️ Your Skills",
-        placeholder="Example: Python, SQL"
+        [
+            "Python",
+            "SQL",
+            "Machine Learning",
+            "Deep Learning",
+            "Artificial Intelligence",
+            "Data Analysis",
+            "Java",
+            "JavaScript",
+            "HTML",
+            "CSS",
+            "AWS",
+            "Azure",
+            "Docker",
+            "Kubernetes",
+            "Networking"
+        ]
     )
 
     skill_level = st.selectbox(
