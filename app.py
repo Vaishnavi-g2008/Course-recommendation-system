@@ -49,6 +49,23 @@ st.markdown("""
     font-weight: 600 !important;
 }
 
+/* =========================
+   SIDEBAR TEXT - WHITE
+   ========================= */
+
+[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stSidebar"] .stMarkdown p,
+[data-testid="stSidebar"] .stMarkdown span,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] h4,
+[data-testid="stSidebar"] h5,
+[data-testid="stSidebar"] h6 {
+    color: white !important;
+}
+
+/* Keep typed input text dark on white input boxes */
 [data-testid="stSidebar"] input {
     color: #111827 !important;
     background-color: white !important;
