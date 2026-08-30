@@ -427,6 +427,38 @@ def row_value(row, column):
 
 
 # ============================================================
+# FORMAT DURATION IN MONTHS
+# ============================================================
+
+def format_duration_months(value):
+
+    if value is None or str(value).strip() == "":
+        return "Not specified"
+
+    text = str(value).strip()
+
+    text = re.sub(
+        r"\s*(months?|month|mos?)\s*",
+        "",
+        text,
+        flags=re.IGNORECASE
+    ).strip()
+
+    try:
+
+        number = float(text)
+
+        if number.is_integer():
+            return f"{int(number)} Months"
+
+        return f"{number:g} Months"
+
+    except Exception:
+
+        return f"{text} Months"
+
+
+# ============================================================
 # RELATED TERMS
 # ============================================================
 
