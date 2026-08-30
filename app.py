@@ -1464,10 +1464,12 @@ for index, (_, row) in enumerate(
         CAREER_COL
     )
 
-    duration_value = row_value(
+    duration_value = format_duration_months(
+    row_value(
         row,
         DURATION_COL
     )
+)
 
     rating_value = row_value(
         row,
